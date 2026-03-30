@@ -1717,40 +1717,81 @@ const SCROLL = {
 // Hero=100vh, About=100vh, Works=400vh, Overview=100vh, Web+Contact=200vh
 // Total = 900vh ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ durations: 1, 1, 4, 1, 2 (sum=9)
 const SCROLL_KEYFRAMES = [
-        // 1. Hero (100vh): fly INTO the torus
-        { rotX: 1.57, rotY: 2.8, rotZ: 0, scale: 4.5, pathT: 0, duration: 1 },
-        // 2. About (100vh): Endurance position
-        { rotX: 0.85, rotY: 6.28, rotZ: 0.15, scale: 0.45, pathT: 0.2, duration: 1 },
-        // 3. Works (400vh): Endurance floating
-        { rotX: 0.8, rotY: 12.56, rotZ: 0.25, scale: 0.5, pathT: 0.4, duration: 4 },
-        // 4. Overview (100vh): torus grows, center
-        { rotX: 0.15, rotY: 15.0, rotZ: 0.12, scale: 1.3, pathT: 0.6, duration: 1 },
-        // 5. World-Class Web (100vh): torus moves far right
-        { rotX: 0.35, rotY: 18.0, rotZ: -0.3, scale: 0.35, pathT: 0.8, duration: 1 },
-        // 6. Contact (100vh): torus stays far right, away from form
-        { rotX: 0.35, rotY: 19.5, rotZ: -0.3, scale: 0.3, pathT: 1.0, duration: 1 },
-      ];
-
-      // ---- CURVE-BASED ANIMATION PATHS ----
-      // Production-grade: CatmullRomCurve3 for smooth organic movement
-      // Torus flies along a spline instead of linear interpolation between keyframes
-      const torusPositionPath = new THREE.CatmullRomCurve3([
-        new THREE.Vector3(0, 0, 0),          // Hero: center
-        new THREE.Vector3(-0.45, 0, 0),      // About: left side
-        new THREE.Vector3(-0.35, -0.05, 0),  // Works: slightly left, drifting
-        new THREE.Vector3(-0.12, 0, 0),      // Overview: near center
-        new THREE.Vector3(2.5, 0.3, 0),      // Web: far right
-        new THREE.Vector3(2.8, 0.4, 0),      // Contact: far right, clear of form
-      ], false, 'catmullrom', 0.5);
-
-      const cameraMotionPath = new THREE.CatmullRomCurve3([
-        new THREE.Vector3(0, 0, 4.5),      // Hero
-        new THREE.Vector3(0, 0.25, 4.2),   // About
-        new THREE.Vector3(0, 0.25, 4.0),   // Works
-        new THREE.Vector3(0, 0.4, 3.2),    // Overview
-        new THREE.Vector3(0, 0.5, 5.0),    // Web
-        new THREE.Vector3(0, 0.5, 5.5),    // Contact
-      ], false, 'catmullrom', 0.5)
+  // 1. Hero (100vh): fly INTO the torus ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ portal effect
+  {
+    rotX: 1.57,
+    rotY: 2.8,
+    rotZ: 0,
+    scale: 4.5,
+    posX: 0,
+    posY: 0,
+    camY: 0,
+    camZ: 4.5,
+    duration: 1,
+  },
+  // 2. About (100vh): exit portal ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ torus shrinks, arrives at Endurance position
+  //    Ring tilted toward camera but not fully face-on ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ more Interstellar angle
+  {
+    rotX: 0.85,          // moderate tilt ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ ring visible but elongated, not circular
+    rotY: 6.28,         // one full spin (2ÃÂÃÂÃÂÃÂ)
+    rotZ: 0.15,
+    scale: 0.45,
+    posX: -0.45,         // pushed further left into the gap, fully visible
+    posY: 0,
+    camY: 0.25,
+    camZ: 4.2,
+    duration: 1,
+  },
+  // 3. Works (400vh): Endurance floating ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ torus holds angle,
+  //    slow spin, gentle drift. Weightless, dreamy, like docking scene.
+  {
+    rotX: 0.8,           // slightly less tilt over scroll for subtle movement
+    rotY: 12.56,
+    rotZ: 0.25,
+    scale: 0.5,
+    posX: -0.35,         // gentle drift but stays in gap
+    posY: -0.05,
+    camY: 0.25,
+    camZ: 4.0,
+    duration: 4,
+  },
+  // 4. Overview (100vh): torus grows, returns to center
+  {
+    rotX: 0.15,
+    rotY: 15.0,
+    rotZ: 0.12,
+    scale: 1.3,
+    posX: -0.12,
+    posY: 0,
+    camY: 0.4,
+    camZ: 3.2,
+    duration: 1,
+  },
+  // 5. World-Class Web (100vh): torus moves far right quickly
+  {
+    rotX: 0.35,
+    rotY: 18.0,
+    rotZ: -0.3,
+    scale: 0.35,
+    posX: 2.5,           // already far right before contact section
+    posY: 0.3,
+    camY: 0.5,
+    camZ: 5.0,
+    duration: 1,
+  },
+  // 6. Contact (100vh): torus stays far right, away from form
+  {
+    rotX: 0.35,
+    rotY: 19.5,
+    rotZ: -0.3,
+    scale: 0.3,
+    posX: 2.8,           // even further right, fully out of form area
+    posY: 0.4,
+    camY: 0.5,
+    camZ: 5.5,
+    duration: 1,
+  },
+];
 
 const ANIMATION = {
   coilPhaseSpeed: 0.01,
@@ -1948,10 +1989,15 @@ function initScene() {
   scene.add(mesh);
 
   scrollState = {
-        rotX: 1.57, rotY: 2.8, rotZ: 0,
-        scale: 4.5,
-        pathT: 0,  // 0..1 progress along CatmullRomCurve3 paths
-      }
+    rotX: SCROLL.initial.rotX,
+    rotY: SCROLL.initial.rotY,
+    rotZ: SCROLL.initial.rotZ,
+    scale: SCROLL.initial.scale,
+    posX: SCROLL.initial.posX,
+    posY: SCROLL.initial.posY,
+    camY: SCROLL.initial.camY,
+    camZ: 10, // start far away ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ entrance animation brings camera in
+  };
 
   // Entrance combo: canvas fades in + camera drifts from depth
   const threeCanvas = document.getElementById('three-canvas');
@@ -2009,33 +2055,23 @@ function animate() {
   smoothMx += (mx - smoothMx) * ANIMATION.mouseLerpFactor;
   smoothMy += (my - smoothMy) * ANIMATION.mouseLerpFactor;
 
+  const L = ANIMATION.meshLerpFactor;
 
-          const L = SCROLL.meshLerpFactor;
-          const clampT = Math.min(Math.max(scrollState.pathT, 0), 1);
+  mesh.rotation.x += (scrollState.rotX + smoothMy * ANIMATION.mouseRotationInfluence - mesh.rotation.x) * L;
+  mesh.rotation.y += (scrollState.rotY + smoothMx * ANIMATION.mouseRotationInfluence - mesh.rotation.y) * L;
+  mesh.rotation.z += (scrollState.rotZ - mesh.rotation.z) * L;
 
-          // ---- Curve-based position (CatmullRomCurve3) ----
-          const torusTarget = torusPositionPath.getPointAt(clampT);
-          mesh.position.x += (torusTarget.x - mesh.position.x) * L;
-          mesh.position.y += (torusTarget.y - mesh.position.y) * L;
+  const s = scrollState.scale;
+  mesh.scale.x += (s - mesh.scale.x) * L;
+  mesh.scale.y += (s - mesh.scale.y) * L;
+  mesh.scale.z += (s - mesh.scale.z) * L;
 
-          // ---- Curve-based camera (CatmullRomCurve3) ----
-          const camTarget = cameraMotionPath.getPointAt(clampT);
-          camera.position.y += (camTarget.y - camera.position.y) * L;
-          camera.position.z += (camTarget.z - camera.position.z) * L;
+  mesh.position.x += (scrollState.posX - mesh.position.x) * L;
+  mesh.position.y += (scrollState.posY - mesh.position.y) * L;
 
-          // ---- Rotation (still GSAP-driven via scrollState) ----
-          mesh.rotation.x += (scrollState.rotX - mesh.rotation.x) * L;
-          mesh.rotation.y += (scrollState.rotY - mesh.rotation.y) * L;
-          mesh.rotation.z += (scrollState.rotZ - mesh.rotation.z) * L;
-
-          // ---- Scale (GSAP-driven) ----
-          const S = scrollState.scale;
-          mesh.scale.x += (S - mesh.scale.x) * L;
-          mesh.scale.y += (S - mesh.scale.y) * L;
-          mesh.scale.z += (S - mesh.scale.z) * L;
-
-          // Camera looks at world origin, offset by curve Y
-          camera.lookAt(0, camTarget.y, 0);
+  camera.position.y += (scrollState.camY - camera.position.y) * L;
+  camera.position.z += (scrollState.camZ - camera.position.z) * L;
+  camera.lookAt(0, scrollState.camY, 0);
 
   renderer.render(scene, camera);
 }
