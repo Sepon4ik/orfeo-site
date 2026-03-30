@@ -1,0 +1,2705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Agency ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ Think. Build. Scale.</title>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+<!-- ============================================
+     INLINE STYLES (order: variables ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ global ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ sections ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ effects)
+     ============================================ -->
+<style>
+/* ============ VARIABLES ============ */
+:root {
+  --bg-primary: #08081a;
+  --text-primary: #fff;
+  --text-muted: rgba(255,255,255,0.55);
+  --text-dim: rgba(255,255,255,0.35);
+  --card-bg: rgba(255,255,255,0.03);
+  --card-border: rgba(255,255,255,0.06);
+  --card-hover-bg: rgba(255,255,255,0.05);
+  --card-hover-border: rgba(255,255,255,0.12);
+  --gradient-pink: rgb(232,83,242);
+  --gradient-cyan: rgb(0,197,230);
+  --gradient-blue: rgb(29,99,255);
+  --font-serif: 'Instrument Serif', Georgia, serif;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* ============ GLOBAL ============ */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  overscroll-behavior: none;
+  /* scroll-behavior handled by fullpage.js via GSAP ScrollToPlugin */
+}
+
+body {
+  background: #08081a;
+  color: #fff;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+}
+
+/* ============ HEADER ============ */
+.site-header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 50000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.4rem 4%;
+  pointer-events: none; /* allow clicks through to content */
+}
+
+.site-header * {
+  pointer-events: auto;
+}
+
+/* Left: logo + status */
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-logo {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: 1.6rem;
+  font-style: italic;
+  line-height: 1;
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+.header-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.65rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  opacity: 0;
+  transform: translateX(-15px);
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #00e87b;
+  box-shadow: 0 0 8px rgba(0,232,123,0.6);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; box-shadow: 0 0 8px rgba(0,232,123,0.6); }
+  50% { opacity: 0.4; box-shadow: 0 0 2px rgba(0,232,123,0.2); }
+}
+
+/* Right: numbered nav */
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+}
+
+.nav-item {
+  position: relative;
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+  text-decoration: none;
+  padding: 0.3em 0;
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: color 0.4s;
+}
+
+/* Number prefix via data attribute */
+.nav-item::before {
+  content: attr(data-index);
+  margin-right: 0.5em;
+  font-size: 0.55rem;
+  font-weight: 300;
+  color: rgba(255,255,255,0.2);
+  vertical-align: top;
+  position: relative;
+  top: -0.15em;
+  transition: color 0.4s;
+}
+
+/* Animated underline on hover */
+.nav-item::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 0%;
+  height: 1px;
+  background: linear-gradient(90deg, rgb(232,83,242), rgb(0,197,230));
+  transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav-item:hover {
+  color: rgba(255,255,255,0.9);
+}
+
+.nav-item:hover::before {
+  color: rgba(0,197,230,0.6);
+}
+
+.nav-item:hover::after {
+  width: 100%;
+}
+
+/* Faulty lamp flicker ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ each item on its own broken cycle */
+.nav-item.glitch-ready:nth-child(1) { animation: lamp-1 11s infinite 2s; }
+.nav-item.glitch-ready:nth-child(2) { animation: lamp-2 14s infinite 6s; }
+.nav-item.glitch-ready:nth-child(3) { animation: lamp-3 9s infinite 4s; }
+
+@keyframes lamp-1 {
+  0%, 100% { opacity: 1; }
+  31%    { opacity: 1; }
+  31.2%  { opacity: 0; }
+  31.5%  { opacity: 0.6; }
+  31.7%  { opacity: 0; }
+  32.1%  { opacity: 1; }
+  32.4%  { opacity: 0; }
+  32.6%  { opacity: 0.4; }
+  33%    { opacity: 0; }
+  33.5%  { opacity: 1; }
+  /* long pause then one quick blink */
+  72%    { opacity: 1; }
+  72.2%  { opacity: 0; }
+  72.5%  { opacity: 1; }
+}
+
+@keyframes lamp-2 {
+  0%, 100% { opacity: 1; }
+  44%    { opacity: 1; }
+  44.1%  { opacity: 0; }
+  44.3%  { opacity: 0.3; }
+  44.5%  { opacity: 0; }
+  44.8%  { opacity: 0.7; }
+  44.9%  { opacity: 0; }
+  45.3%  { opacity: 1; }
+  /* stutter */
+  78%    { opacity: 1; }
+  78.2%  { opacity: 0; }
+  78.3%  { opacity: 0.5; }
+  78.4%  { opacity: 0; }
+  78.7%  { opacity: 1; }
+}
+
+@keyframes lamp-3 {
+  0%, 100% { opacity: 1; }
+  22%    { opacity: 1; }
+  22.1%  { opacity: 0; }
+  22.4%  { opacity: 1; }
+  22.5%  { opacity: 0; }
+  22.7%  { opacity: 0.2; }
+  22.9%  { opacity: 0; }
+  23.3%  { opacity: 0.6; }
+  23.4%  { opacity: 0; }
+  23.8%  { opacity: 1; }
+  /* single twitch later */
+  61%    { opacity: 1; }
+  61.1%  { opacity: 0; }
+  61.3%  { opacity: 1; }
+}
+
+/* 3D Canvas ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ fixed background */
+#three-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  opacity: 0; /* hidden initially ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ entrance animation fades in */
+  transition: none;
+}
+
+/* Scrollable content overlay */
+.scroll-container {
+  position: relative;
+  z-index: 10000;
+  pointer-events: none;
+}
+
+.section {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0 10%;
+}
+
+.section h2 {
+  font-size: clamp(2rem, 5vw, 4.5rem);
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(40px);
+  text-shadow: 0 0 40px rgba(100,150,255,0.3), 0 0 80px rgba(80,100,200,0.15);
+}
+
+.section p {
+  font-size: clamp(0.9rem, 1.5vw, 1.15rem);
+  font-weight: 300;
+  color: rgba(255,255,255,0.55);
+  max-width: 520px;
+  text-align: center;
+  margin-top: 1.2rem;
+  line-height: 1.7;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+/* ============ HERO ============ */
+.section.hero {
+  position: relative;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding-top: 12vh;
+}
+
+.section.hero h2 {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: clamp(1.1rem, 1.6vw, 1.4rem);
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+  position: relative;
+  z-index: 10000;
+  line-height: 1.2;
+  text-align: left;
+  text-shadow: none;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+/* Gradient accent on "AI" ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ exact Orfeo colors */
+.gradient-text {
+  background: -webkit-linear-gradient(1deg, rgb(232,83,242) -5%, rgb(0,197,230) 60%, rgb(29,99,255) 80%, rgb(232,83,242) 110%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-style: italic;
+}
+
+/* ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ Magnetic Border CTA Button ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ */
+.cta-portal {
+  --mx: 50%;
+  --my: 50%;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+  margin-top: auto;
+  margin-bottom: 8vh;
+  align-self: center;
+  opacity: 0;
+  transform: translateY(20px);
+  padding: 1em 2.4em;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: clamp(0.85rem, 1.2vw, 1rem);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.85);
+  background:
+    linear-gradient(
+      105deg,
+      transparent 0%,
+      transparent 35%,
+      rgba(232,83,242,0.08) 42%,
+      rgba(0,197,230,0.12) 50%,
+      rgba(29,99,255,0.08) 58%,
+      transparent 65%,
+      transparent 100%
+    ),
+    rgba(255,255,255,0.03);
+  background-size: 300% 100%, 100% 100%;
+  background-position: 100% 0, 0 0;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 60px;
+  cursor: pointer;
+  z-index: 10000;
+  pointer-events: auto;
+  text-decoration: none;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: color 0.3s, border-color 0.3s;
+  animation: shimmer 4s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 100% 0, 0 0; }
+  50%  { background-position: -100% 0, 0 0; }
+  100% { background-position: 100% 0, 0 0; }
+}
+
+/* Gradient glow that follows the cursor */
+.cta-portal::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 62px;
+  padding: 2px;
+  background: radial-gradient(
+    circle 120px at var(--mx) var(--my),
+    rgb(232,83,242),
+    rgb(0,197,230) 40%,
+    transparent 70%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+/* Soft outer glow following cursor */
+.cta-portal::after {
+  content: '';
+  position: absolute;
+  inset: -12px;
+  border-radius: 72px;
+  background: radial-gradient(
+    circle 100px at var(--mx) var(--my),
+    rgba(232,83,242,0.25),
+    rgba(0,197,230,0.15) 40%,
+    transparent 70%
+  );
+  filter: blur(18px);
+  opacity: 0;
+  transition: opacity 0.4s;
+  z-index: -1;
+}
+
+.cta-portal:hover {
+  color: #ffffff;
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.12);
+}
+
+.cta-portal:hover::before {
+  opacity: 1;
+}
+
+.cta-portal:hover::after {
+  opacity: 1;
+}
+
+.cta-portal .arrow {
+  display: inline-flex;
+  transition: transform 0.3s;
+}
+
+.cta-portal:hover .arrow {
+  transform: translateX(4px);
+}
+
+/* Rotating subtitle ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ criss-cross container */
+.rotating-subtitle {
+  margin-top: 0.2rem;
+  width: 100%;
+  height: clamp(120px, 18vw, 200px);
+  overflow: hidden;
+  position: relative;
+  text-align: left;
+  z-index: 10000;
+  opacity: 0; /* GSAP enables before slice animation */
+}
+
+.rotating-subtitle .phrase {
+  position: absolute;
+  top: 50%; left: 0; right: 0;
+  transform: translateY(-50%);
+  height: clamp(55px, 7vw, 85px);
+  line-height: clamp(55px, 7vw, 85px);
+  pointer-events: none;
+}
+
+/* Each slice is a full copy of the text, diagonally clipped */
+.rotating-subtitle .phrase .slice {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #ffffff;
+  white-space: nowrap;
+  opacity: 0; /* hidden by default ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ GSAP animates in */
+}
+
+.rotating-subtitle .phrase .slice span {
+  font-weight: 500;
+}
+
+/* Diagonal clip ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ top-left portion */
+.slice-a {
+  clip-path: polygon(0 0, 100% 0, 100% 38%, 0 62%);
+}
+
+/* Diagonal clip ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ bottom-right portion */
+.slice-b {
+  clip-path: polygon(0 62%, 100% 38%, 100% 100%, 0 100%);
+}
+
+/* ============ ABOUT ============ */
+/* ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ About / What We Do section ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ */
+.section.about-section {
+  height: 100vh;
+  justify-content: center;
+  padding: 0 10%;
+}
+
+.about-title {
+  font-family: 'Instrument Serif', Georgia, serif !important;
+  font-size: clamp(2.5rem, 5.5vw, 4.5rem) !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase;
+}
+
+.about-text {
+  max-width: 600px;
+  margin-top: 3rem;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.about-text p {
+  font-size: clamp(0.9rem, 1.3vw, 1.05rem);
+  font-weight: 300;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+  opacity: 1;
+  transform: none;
+}
+
+/* ============ WORKS ============ */
+/* ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ Portfolio / Works Section ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ */
+/* ============ OUR WORK ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ FULLSCREEN PINNED SHOWCASE ============ */
+.works-section {
+  position: relative;
+  height: 400vh; /* 4 projects ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ 100vh each */
+  pointer-events: auto;
+  /* Allow the 3D canvas torus to show through behind this section */
+  background: transparent;
+}
+
+/* Pinned viewport container ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ stays in view while scroll drives project changes */
+.works-viewport {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  /* Let the 3D torus show through the gap between columns */
+  background: transparent;
+}
+
+/* ---- Left column: project info ---- */
+.works-info {
+  position: absolute;
+  top: 0; left: 0;
+  width: 42%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 3% 0 6%;
+  z-index: 5;
+  background: transparent;
+}
+
+/* Giant outlined number */
+.works-number {
+  font-family: var(--font-serif);
+  font-size: clamp(8rem, 14vw, 13rem);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 0.85;
+  -webkit-text-stroke: 1.5px rgba(255,255,255,0.08);
+  color: transparent;
+  position: absolute;
+  top: 10vh;
+  left: 6%;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+
+/* Category label */
+.works-label {
+  font-family: var(--font-sans);
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.works-label::before {
+  content: '';
+  width: 28px;
+  height: 1px;
+  background: linear-gradient(90deg, var(--gradient-pink), var(--gradient-cyan));
+}
+
+/* Project title ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ huge serif */
+.works-title {
+  font-family: var(--font-serif);
+  font-size: clamp(2.8rem, 5.5vw, 5rem);
+  font-weight: 400;
+  color: #fff;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin-bottom: 1.5rem;
+}
+
+/* Description */
+.works-desc {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 300;
+  color: rgba(255,255,255,0.4);
+  line-height: 1.8;
+  max-width: 400px;
+  margin-bottom: 2rem;
+}
+
+/* Tags row */
+.works-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.works-tags span {
+  font-family: var(--font-sans);
+  font-size: 0.58rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 100px;
+  padding: 0.4rem 0.85rem;
+  transition: border-color 0.4s, color 0.4s;
+}
+
+/* View project CTA */
+.works-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.4s;
+}
+
+.works-cta:hover { color: rgba(255,255,255,0.8); }
+
+.works-cta .cta-line {
+  display: inline-block;
+  width: 24px;
+  height: 1px;
+  background: currentColor;
+  position: relative;
+  transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.works-cta .cta-line::after {
+  content: '';
+  position: absolute;
+  right: -1px; top: -3px;
+  width: 7px; height: 7px;
+  border-top: 1px solid currentColor;
+  border-right: 1px solid currentColor;
+  transform: rotate(45deg);
+}
+
+.works-cta:hover .cta-line { width: 44px; }
+
+/* ---- Right column: fullscreen image ---- */
+.works-images {
+  position: absolute;
+  top: 0; right: 0;
+  width: 48%;
+  height: 100%;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.works-img {
+  position: absolute;
+  inset: 3vh 3% 3vh 0;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.04);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(1.08);
+  transition: none; /* GSAP controls this */
+}
+
+.works-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.65) saturate(0.8);
+  transition: filter 0.6s ease;
+}
+
+.works-img img:hover {
+  filter: brightness(0.8) saturate(1);
+}
+
+/* Soft fade on left edge of image ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ torus "bleeds" into the gap */
+.works-img::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  width: 30%;
+  background: linear-gradient(90deg, var(--bg-primary) 0%, transparent 100%);
+  z-index: 2;
+  pointer-events: none;
+  border-radius: 20px 0 0 20px;
+}
+
+/* Inner glow */
+.works-img::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  background: radial-gradient(ellipse at 30% 30%, rgba(0,197,230,0.04) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.works-img:nth-child(even)::after {
+  background: radial-gradient(ellipse at 70% 70%, rgba(232,83,242,0.04) 0%, transparent 60%);
+}
+
+/* ---- Bottom bar: progress + counter ---- */
+.works-bottom {
+  position: absolute;
+  bottom: 3.5vh;
+  left: 6%;
+  right: 6%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.works-progress {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.works-progress-bar {
+  width: 100px;
+  height: 1px;
+  background: rgba(255,255,255,0.06);
+  position: relative;
+  overflow: hidden;
+}
+
+.works-progress-fill {
+  position: absolute;
+  top: 0; left: 0;
+  height: 100%;
+  width: 25%;
+  background: linear-gradient(90deg, var(--gradient-pink), var(--gradient-cyan));
+  transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 0 10px rgba(0,197,230,0.3);
+}
+
+.works-counter {
+  font-family: var(--font-sans);
+  font-size: 0.65rem;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  color: rgba(255,255,255,0.2);
+  white-space: nowrap;
+}
+
+/* Section title ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ top right, rotated */
+.works-section-label {
+  position: absolute;
+  top: 50%;
+  right: 2.5%;
+  transform: translateY(-50%) rotate(90deg);
+  transform-origin: center center;
+  font-family: var(--font-sans);
+  font-size: 0.55rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.1);
+  z-index: 10;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* ---- All slide content hidden by default, GSAP reveals ---- */
+.works-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.works-slide.is-active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ============ WORKS ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ MOBILE ============ */
+@media (max-width: 768px) {
+  .works-section {
+    height: auto;
+  }
+  .works-viewport {
+    position: relative;
+    height: auto;
+  }
+  .works-info {
+    position: relative;
+    width: 100%;
+    padding: 8vh 5% 2vh;
+  }
+  .works-images {
+    position: relative;
+    width: 100%;
+    height: 50vh;
+  }
+  .works-img {
+    inset: 0 5%;
+    position: relative;
+    opacity: 1;
+    transform: none;
+    margin-bottom: 2rem;
+  }
+  .works-number {
+    font-size: 5rem;
+    top: 2vh;
+    left: 5%;
+  }
+  .works-bottom { display: none; }
+  .works-slide {
+    position: relative;
+    opacity: 1;
+    pointer-events: auto;
+    margin-bottom: 4vh;
+  }
+  .works-section-label { display: none; }
+}
+
+/* ============ CONTACT SECTION ============ */
+.contact-section {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8vh 5% 4vh;
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+  pointer-events: auto;
+}
+
+/* Decorative top divider */
+.contact-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06) 30%, rgba(255,255,255,0.06) 70%, transparent);
+}
+
+.contact-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  max-width: 640px;
+}
+
+.contact-header .contact-label {
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.contact-header .contact-label::before,
+.contact-header .contact-label::after {
+  content: '';
+  width: 30px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15));
+}
+
+.contact-header .contact-label::after {
+  background: linear-gradient(90deg, rgba(255,255,255,0.15), transparent);
+}
+
+.contact-header h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(2.8rem, 6vw, 5rem);
+  font-weight: 400;
+  color: #fff;
+  line-height: 1.1;
+  margin-bottom: 1.2rem;
+  opacity: 0;
+  transform: translateY(40px);
+  text-shadow: none;
+  text-align: center;
+}
+
+.contact-header h2 em {
+  font-style: italic;
+  background: linear-gradient(135deg, var(--gradient-pink), var(--gradient-cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.contact-header .contact-sub {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 300;
+  color: rgba(255,255,255,0.4);
+  line-height: 1.7;
+  opacity: 0;
+  transform: translateY(25px);
+}
+
+/* Tally form container */
+.contact-form-wrap {
+  width: 100%;
+  max-width: 680px;
+  min-height: 500px;
+  position: relative;
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+/* Bottom info row */
+.contact-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3rem;
+  margin-top: 4rem;
+  padding-top: 3rem;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  width: 100%;
+  max-width: 680px;
+  opacity: 0;
+}
+
+.contact-bottom .contact-info-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.contact-bottom .contact-info-label {
+  font-family: var(--font-sans);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.2);
+}
+
+.contact-bottom .contact-info-value {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 300;
+  color: rgba(255,255,255,0.5);
+}
+
+.contact-bottom .contact-info-value a {
+  color: rgba(255,255,255,0.5);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.contact-bottom .contact-info-value a:hover {
+  color: rgba(255,255,255,0.8);
+}
+
+@media (max-width: 768px) {
+  .contact-section {
+    padding: 8vh 4% 4vh;
+  }
+  .contact-bottom {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+}
+
+/* ============ EFFECTS ============ */
+/* Film grain noise overlay */
+#grain-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0.22;
+  mix-blend-mode: screen;  /* grain visible on dark bg + tinted by blobs underneath */
+}
+
+/* Wandering ambient light blobs */
+.ambient-lights {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+  mix-blend-mode: screen;
+}
+
+.ambient-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(180px);
+  opacity: 0.4;
+  will-change: transform;
+}
+
+/* Purple ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ deep violet glow */
+.blob-1 {
+  width: 900px; height: 900px;
+  background: radial-gradient(circle, rgba(120,40,220,0.55) 0%, rgba(80,20,180,0.2) 40%, transparent 70%);
+  animation: wander1 24s ease-in-out infinite alternate;
+}
+
+/* Cyan ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ electric teal */
+.blob-2 {
+  width: 800px; height: 800px;
+  background: radial-gradient(circle, rgba(0,200,240,0.5) 0%, rgba(0,120,200,0.15) 40%, transparent 70%);
+  animation: wander2 30s ease-in-out infinite alternate;
+}
+
+/* Magenta-rose ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ warm pink accent */
+.blob-3 {
+  width: 750px; height: 750px;
+  background: radial-gradient(circle, rgba(230,50,140,0.4) 0%, rgba(180,30,100,0.12) 40%, transparent 70%);
+  animation: wander3 28s ease-in-out infinite alternate;
+}
+
+@keyframes wander1 {
+  0%   { transform: translate(-30vw, -20vh); }
+  20%  { transform: translate(70vw, 10vh); }
+  40%  { transform: translate(20vw, 80vh); }
+  60%  { transform: translate(90vw, 50vh); }
+  80%  { transform: translate(-10vw, 40vh); }
+  100% { transform: translate(50vw, -15vh); }
+}
+
+@keyframes wander2 {
+  0%   { transform: translate(90vw, 80vh); }
+  20%  { transform: translate(-20vw, 40vh); }
+  40%  { transform: translate(60vw, -15vh); }
+  60%  { transform: translate(10vw, 70vh); }
+  80%  { transform: translate(80vw, 20vh); }
+  100% { transform: translate(-10vw, 90vh); }
+}
+
+@keyframes wander3 {
+  0%   { transform: translate(40vw, -20vh); }
+  20%  { transform: translate(-15vw, 60vh); }
+  40%  { transform: translate(85vw, 80vh); }
+  60%  { transform: translate(30vw, -10vh); }
+  80%  { transform: translate(70vw, 50vh); }
+  100% { transform: translate(-20vw, 30vh); }
+}
+
+/* Scroll indicator ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ hidden until preloader completes */
+.scroll-hint {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  z-index: 10001;
+  opacity: 0;
+}
+
+.scroll-hint .scroll-label {
+  font-size: 0.55rem;
+  font-weight: 400;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+}
+
+.scroll-hint .scroll-line {
+  width: 1px;
+  height: 50px;
+  position: relative;
+  background: rgba(255,255,255,0.06);
+  overflow: hidden;
+}
+
+.scroll-hint .scroll-line::after {
+  content: '';
+  position: absolute;
+  top: -30%;
+  left: 0;
+  width: 100%;
+  height: 30%;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(0,197,230,0.7),
+    rgba(232,83,242,0.5),
+    transparent
+  );
+  animation: scroll-down 2.2s ease-in-out infinite;
+}
+
+/* Default: light goes down */
+@keyframes scroll-down {
+  0%   { top: -30%; }
+  100% { top: 110%; }
+}
+
+/* Reverse: light goes up */
+@keyframes scroll-up {
+  0%   { top: 110%; }
+  100% { top: -30%; }
+}
+
+/* Class toggles direction */
+.scroll-hint.dir-up .scroll-line::after {
+  animation-name: scroll-up;
+}
+
+/* ============ PRELOADER ============ */
+/* Transparent overlay ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ grain, blobs, and torus visible through it */
+.preloader {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 99999;
+  pointer-events: auto;
+}
+
+/* Full-width progress track */
+.pl-track {
+  position: absolute;
+  top: 50%;
+  left: 5%;
+  width: 90%;
+  height: 1px;
+  background: rgba(255,255,255,0.06);
+  transform: translateY(-50%);
+}
+
+/* Gradient fill bar */
+.pl-fill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg,
+    rgb(232,83,242),
+    rgb(0,197,230),
+    rgb(29,99,255));
+  box-shadow: 0 0 8px rgba(232,83,242,0.4), 0 0 24px rgba(0,197,230,0.2);
+}
+
+/* Percentage text ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ follows the fill bar */
+.pl-percent {
+  position: absolute;
+  top: calc(50% + 14px);
+  left: 5%;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: clamp(0.7rem, 1vw, 0.85rem);
+  font-weight: 300;
+  letter-spacing: 0.15em;
+  color: rgba(255,255,255,0.35);
+  opacity: 0; /* hidden by default, GSAP fades in ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ prevents flash */
+}
+
+/* Skip label */
+.pl-skip {
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
+  z-index: 100000;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: rgba(255,255,255,0.2);
+  padding: 8px 0;
+  pointer-events: auto;
+  transition: color 0.3s;
+  opacity: 0; /* hidden by default, GSAP fades in ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ prevents flash */
+}
+.pl-skip:hover { color: rgba(255,255,255,0.5); }
+</style>
+</head>
+<body>
+
+<!-- ============================================
+     DECORATIVE LAYERS (fixed behind content)
+     ============================================ -->
+
+<!-- ============================================
+     PRELOADER ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ transparent, grain visible through
+     ============================================ -->
+<div class="preloader" id="preloader">
+  <div class="pl-track">
+    <div class="pl-fill" id="plFill"></div>
+  </div>
+  <div class="pl-percent" id="plPercent">0%</div>
+  <button class="pl-skip" id="plSkip">Skip</button>
+</div>
+
+<!-- ============ HEADER / NAV ============ -->
+<header class="site-header" id="siteHeader">
+  <div class="header-left">
+    <span class="header-logo"><span class="gradient-text">AI</span></span>
+    <span class="header-status">
+      <span class="status-dot"></span>
+      Available for projects
+    </span>
+  </div>
+  <nav class="header-nav">
+    <a href="#sec-features" class="nav-item" data-index="01">About</a>
+    <a href="#sec-services" class="nav-item" data-index="02">Services</a>
+    <a href="#sec-contact" class="nav-item" data-index="03">Contact</a>
+  </nav>
+</header>
+
+<!-- Wandering ambient lights -->
+<div class="ambient-lights">
+  <div class="ambient-blob blob-1"></div>
+  <div class="ambient-blob blob-2"></div>
+  <div class="ambient-blob blob-3"></div>
+</div>
+
+<!-- 3D Canvas ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ Three.js renders here -->
+<canvas id="three-canvas"></canvas>
+
+<!-- Film grain overlay -->
+<canvas id="grain-canvas"></canvas>
+
+<!-- Scroll hint -->
+<div class="scroll-hint" id="scrollHint">
+  <div class="scroll-line"></div>
+  <span class="scroll-label">Scroll</span>
+</div>
+
+
+<!-- ============================================
+     CONTENT SECTIONS (scrollable overlay)
+     ============================================ -->
+<div class="scroll-container">
+
+  <!-- HERO -->
+  <section class="section hero" id="sec-hero">
+    <div class="rotating-subtitle" id="rotatingSubtitle">
+      <div class="phrase">
+        <span class="slice slice-a"><span>Think.</span> Build. Scale.</span>
+        <span class="slice slice-b"><span>Think.</span> Build. Scale.</span>
+      </div>
+      <div class="phrase">
+        <span class="slice slice-a">Faster. <span>Smarter.</span> Better.</span>
+        <span class="slice slice-b">Faster. <span>Smarter.</span> Better.</span>
+      </div>
+      <div class="phrase">
+        <span class="slice slice-a">Automate. Innovate. <span>Dominate.</span></span>
+        <span class="slice slice-b">Automate. Innovate. <span>Dominate.</span></span>
+      </div>
+      <div class="phrase">
+        <span class="slice slice-a"><span>Ideas</span> into Intelligence.</span>
+        <span class="slice slice-b"><span>Ideas</span> into Intelligence.</span>
+      </div>
+    </div>
+    <h2><span class="gradient-text">AI</span> Agency</h2>
+    <a href="#" class="cta-portal">
+      Book your free AI consultation
+      <span class="arrow">ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ</span>
+    </a>
+  </section>
+
+  <!-- ABOUT / WHAT WE DO -->
+  <section class="section about-section" id="sec-features">
+    <h2 class="about-title">What We Do</h2>
+    <div class="about-text">
+      <p>We build advanced AI systems that help businesses think faster, respond smarter, and operate with greater confidence. Our work spans a growing suite of intelligent products, ranging from conversational AI that understands context to image-based engines that generate, edit, and interpret visuals with remarkable precision.</p>
+      <p>We bring the AI technology to make it happen. Our goal isn't just to follow the future of AI ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ it's to help shape it for your business.</p>
+    </div>
+  </section>
+
+  <!-- PORTFOLIO / OUR WORK ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ FULLSCREEN PINNED SHOWCASE -->
+  <section class="works-section" id="sec-works">
+    <div class="works-viewport" id="worksViewport">
+
+      <!-- Vertical "Selected Work" label -->
+      <span class="works-section-label">Selected Work</span>
+
+      <!-- Project images (right side) -->
+      <div class="works-images" id="worksImages">
+        <div class="works-img" data-project="1">
+          <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=900&h=600&fit=crop&q=80" alt="AI Chatbot interface with conversation bubbles" loading="lazy">
+        </div>
+        <div class="works-img" data-project="2">
+          <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=900&h=600&fit=crop&q=80" alt="Modern interior room redesigned by AI" loading="lazy">
+        </div>
+        <div class="works-img" data-project="3">
+          <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=900&h=600&fit=crop&q=80" alt="Analytics dashboard with charts and data" loading="lazy">
+        </div>
+        <div class="works-img" data-project="4">
+          <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=900&h=600&fit=crop&q=80" alt="Code and search interface on screen" loading="lazy">
+        </div>
+      </div>
+
+      <!-- Project slides (left info column) ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ stacked, GSAP swaps -->
+      <div class="works-info" id="worksInfo">
+
+        <!-- Slide 1 -->
+        <div class="works-slide is-active" data-slide="1">
+          <span class="works-number">01</span>
+          <div class="works-label">AI Chatbot</div>
+          <h3 class="works-title">Intelligent<br>Assistant</h3>
+          <p class="works-desc">Custom AI assistant trained on 12,000+ internal documents for a logistics company. Reduced customer support load by 73% in the first month. Speaks the brand's tone, handles 40+ languages, and escalates edge cases to humans seamlessly.</p>
+          <div class="works-tags">
+            <span>NLP</span>
+            <span>RAG</span>
+            <span>Custom Training</span>
+            <span>Multilingual</span>
+          </div>
+          <a class="works-cta">View Project <span class="cta-line"></span></a>
+        </div>
+
+        <!-- Slide 2 -->
+        <div class="works-slide" data-slide="2">
+          <span class="works-number">02</span>
+          <div class="works-label">AI Interior Design</div>
+          <h3 class="works-title">Reno<br>Solution</h3>
+          <p class="works-desc">Snap a photo of any room ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ get 8 photorealistic redesign options in under 10 seconds. Built for a real estate staging startup. The tool increased their client conversion rate by 2.4x and cut staging costs by 60%.</p>
+          <div class="works-tags">
+            <span>Computer Vision</span>
+            <span>Generative AI</span>
+            <span>Image-to-Image</span>
+          </div>
+          <a class="works-cta">View Project <span class="cta-line"></span></a>
+        </div>
+
+        <!-- Slide 3 -->
+        <div class="works-slide" data-slide="3">
+          <span class="works-number">03</span>
+          <div class="works-label">AI Analytics</div>
+          <h3 class="works-title">BizHub<br>AI</h3>
+          <p class="works-desc">Upload financials, get a full SWOT analysis, valuation model, and competitive landscape ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ all in one click. Built for M&A advisors who needed to cut due diligence from weeks to hours.</p>
+          <div class="works-tags">
+            <span>Data Analysis</span>
+            <span>ML Models</span>
+            <span>Dashboards</span>
+            <span>Finance</span>
+          </div>
+          <a class="works-cta">View Project <span class="cta-line"></span></a>
+        </div>
+
+        <!-- Slide 4 -->
+        <div class="works-slide" data-slide="4">
+          <span class="works-number">04</span>
+          <div class="works-label">AI Search Engine</div>
+          <h3 class="works-title">Smart<br>Discovery</h3>
+          <p class="works-desc">Semantic search across 2M+ product listings for an e-commerce marketplace. Users type natural queries like "warm jacket for hiking in rain" and get precise results ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ no keywords needed. Search-to-purchase rate jumped 41%.</p>
+          <div class="works-tags">
+            <span>Semantic Search</span>
+            <span>Embeddings</span>
+            <span>Real-time</span>
+            <span>E-commerce</span>
+          </div>
+          <a class="works-cta">View Project <span class="cta-line"></span></a>
+        </div>
+
+      </div>
+
+      <!-- Bottom progress bar + counter -->
+      <div class="works-bottom">
+        <div class="works-progress">
+          <div class="works-progress-bar" id="worksProgressBar">
+            <div class="works-progress-fill" id="worksProgressFill"></div>
+          </div>
+          <span class="works-counter" id="worksCounter">01 ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ 04</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- AI INTEGRATION -->
+  <section class="section" id="sec-overview">
+    <h2>AI Integration</h2>
+    <p>From conversational AI to image-based engines that generate, edit, and interpret visuals with precision.</p>
+  </section>
+
+  <!-- WORLD-CLASS WEB -->
+  <section class="section" id="sec-web">
+    <h2>World-Class Web</h2>
+    <p>Award-winning websites with cutting-edge 3D, animation, and immersive user experiences.</p>
+  </section>
+
+  <!-- CONTACT / CTA ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ Tally Project Intake -->
+  <section class="contact-section" id="sec-contact">
+    <div class="contact-header">
+      <div class="contact-label">Start a Project</div>
+      <h2>Let's Build<br>Something <em>Great</em></h2>
+      <p class="contact-sub">Tell us about your project. We'll get back to you within 24 hours with a tailored plan and timeline.</p>
+    </div>
+
+    <!-- Tally Project Intake Form -->
+    <div class="contact-form-wrap" id="contactFormWrap">
+      <iframe
+        data-tally-src="https://tally.so/embed/eqLJ10?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1"
+        loading="lazy"
+        width="100%"
+        height="500"
+        frameborder="0"
+        marginheight="0"
+        marginwidth="0"
+        title="Project Intake Form"
+      ></iframe>
+    </div>
+
+    <div class="contact-bottom" id="contactBottom">
+      <div class="contact-info-item">
+        <span class="contact-info-label">Email</span>
+        <span class="contact-info-value"><a href="mailto:hello@aiagency.com">hello@aiagency.com</a></span>
+      </div>
+      <div class="contact-info-item">
+        <span class="contact-info-label">Response Time</span>
+        <span class="contact-info-value">Within 24 hours</span>
+      </div>
+      <div class="contact-info-item">
+        <span class="contact-info-label">Book a Call</span>
+        <span class="contact-info-value"><a href="#" id="calLink">Schedule on Cal.com</a></span>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ============================================
+     SCRIPTS
+     ============================================ -->
+
+<!-- GSAP + ScrollTrigger (loaded as globals via CDN) -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollToPlugin.min.js"></script>
+
+<!-- Tally Form Embed Script -->
+<script src="https://tally.so/widgets/embed.js"></script>
+
+<!-- PRELOADER ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ runs immediately, before Three.js loads -->
+<script>
+(function() {
+  var fill = document.getElementById('plFill');
+  var percent = document.getElementById('plPercent');
+  var skipBtn = document.getElementById('plSkip');
+  var preloader = document.getElementById('preloader');
+  var scrollHint = document.getElementById('scrollHint');
+
+  if (!preloader || !fill || !percent) return;
+
+  // Hide scroll hint during preloader
+  if (scrollHint) scrollHint.style.opacity = '0';
+
+  var skipped = false;
+  var tl = gsap.timeline({
+    onComplete: function() {
+      preloader.style.pointerEvents = 'none';
+      preloader.style.display = 'none';
+      // Signal to module script that preloader is done
+      window.__preloaderDone = true;
+      if (window.__onPreloaderDone) window.__onPreloaderDone();
+    }
+  });
+
+  // Initial states
+  gsap.set(percent, { opacity: 0 });
+  gsap.set(skipBtn, { opacity: 0 });
+
+  // Phase 1: Percent fades in
+  tl.to(percent, { opacity: 1, duration: 0.5, ease: 'power2.out' }, 0.1);
+  tl.to(skipBtn, { opacity: 1, duration: 0.4 }, 0.3);
+
+  // Phase 2: Fill bar 0ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ100% + counter
+  var count = { val: 0 };
+  tl.to(count, {
+    val: 100,
+    duration: 3.0,
+    ease: 'power2.inOut',
+    onUpdate: function() {
+      var v = Math.round(count.val);
+      percent.textContent = v + '%';
+      fill.style.width = v + '%';
+    },
+  }, 0.2);
+
+  // Phase 3: Everything fades out
+  tl.to([percent, skipBtn], {
+    opacity: 0,
+    duration: 0.4,
+    ease: 'power2.in',
+  }, 3.3);
+
+  tl.to('.pl-track', {
+    opacity: 0,
+    duration: 0.5,
+    ease: 'power2.in',
+  }, 3.3);
+
+  tl.to(preloader, {
+    opacity: 0,
+    duration: 0.3,
+    ease: 'power2.out',
+  }, 3.8);
+
+  // Skip button
+  if (skipBtn) {
+    skipBtn.addEventListener('click', function() {
+      if (skipped) return;
+      skipped = true;
+      tl.progress(1);
+    });
+  }
+
+  // Expose timeline for module script to potentially speed up
+  window.__preloaderTimeline = tl;
+})();
+</script>
+
+<!-- GRAIN ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ runs immediately so film noise is visible during preloader -->
+<script>
+(function() {
+  var gc = document.getElementById('grain-canvas');
+  if (!gc) return;
+  var ctx = gc.getContext('2d');
+  var W = window.innerWidth;
+  var H = window.innerHeight;
+  gc.width = W;
+  gc.height = H;
+
+  var frames = [];
+  var fCount = 4;
+  var intervalMs = 150;
+  for (var f = 0; f < fCount; f++) {
+    var imgData = ctx.createImageData(W, H);
+    var buf32 = new Uint32Array(imgData.data.buffer);
+    for (var i = 0, len = buf32.length; i < len; i++) {
+      var r = Math.random();
+      var v = r < 0.5 ? 0 : (r < 0.93 ? (Math.random() * 30)|0 : (60 + Math.random() * 160)|0);
+      buf32[i] = 0xFF000000 | (v << 16) | (v << 8) | v;
+    }
+    frames.push(imgData);
+  }
+
+  var fi = 0;
+  function noise() {
+    ctx.putImageData(frames[fi], 0, 0);
+    fi = (fi + 1) % fCount;
+  }
+  setInterval(noise, intervalMs);
+  noise();
+})();
+</script>
+
+<!-- Three.js import map (for ES module resolution) -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.162.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.162.0/examples/jsm/"
+  }
+}
+</script>
+
+<!-- ============================================
+     APPLICATION ENTRY POINT (Module Script)
+     ============================================ -->
+<script type="module">
+import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+// ============ CONFIG ============
+const TORUS = {
+  radius: 1.0,
+  coilRadius: 0.35,
+  wireRadius: 0.035,
+  numCoils: 45,
+  coilSegments: 48,
+  pathSegments: 3072,
+  asymmetry: 0.35,
+  coilRadiusMax: 0.48,
+  coilRadiusMin: 0.25,
+};
+
+const CAMERA = {
+  fov: 45,
+  near: 0.1,
+  far: 100,
+  position: {
+    x: 0,
+    y: 0.6,
+    z: 3.5,
+  },
+};
+
+const RENDERER = {
+  antialias: true,
+  pixelRatio: 2,
+  toneMappingExposure: 0.6,
+  backgroundColor: 0x08081a,
+};
+
+const MATERIAL = {
+  color: 0x141420,
+  metalness: 1,
+  roughness: 0.08,
+  clearcoat: 1,
+  clearcoatRoughness: 0.02,
+  reflectivity: 1,
+  envMapIntensity: 1.45,
+  ior: 2.5,
+  iridescence: 0.6,
+  iridescenceIOR: 1.6,
+  iridescenceThicknessRange: [200, 600],
+};
+
+const LIGHTS = {
+  ambient: {
+    color: 0x0a0a18,
+    intensity: 0.4,
+  },
+  directional: [
+    {
+      color: 0xeeeeff,
+      intensity: 3.5,
+      position: { x: 3, y: 5, z: 4 },
+    },
+    {
+      color: 0xccccee,
+      intensity: 1.5,
+      position: { x: -4, y: 3, z: -2 },
+    },
+    {
+      color: 0xddddff,
+      intensity: 2.5,
+      position: { x: -1, y: -2, z: -5 },
+    },
+    {
+      color: 0xddccbb,
+      intensity: 0.8,
+      position: { x: 3, y: -3, z: 2 },
+    },
+  ],
+  orbiting: [
+    {
+      color: 0x8833ff,
+      intensity: 6,
+      distance: 8,
+      radius: 2.5,
+      speed: 0.4,
+      offsetY: 0.3,
+      phase: 0,
+    },
+    {
+      color: 0x00ccff,
+      intensity: 5,
+      distance: 8,
+      radius: 2.8,
+      speed: -0.3,
+      offsetY: -0.2,
+      phase: Math.PI * 0.66,
+    },
+    {
+      color: 0xff2288,
+      intensity: 4,
+      distance: 8,
+      radius: 2.2,
+      speed: 0.5,
+      offsetY: 0.1,
+      phase: Math.PI * 1.33,
+    },
+    {
+      color: 0x22ffaa,
+      intensity: 3,
+      distance: 7,
+      radius: 3.0,
+      speed: -0.25,
+      offsetY: -0.4,
+      phase: Math.PI * 0.5,
+    },
+  ],
+};
+
+const SCROLL = {
+  initial: {
+    rotX: -0.45,
+    rotY: 0.25,
+    rotZ: -0.12,
+    scale: 1,
+    posX: 0,
+    posY: 0.15,
+    camY: 0.6,
+    camZ: 3.5,
+  },
+  scrub: 1.2,      // was 5 ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ much faster response for snap-scroll
+  lerp: 0.045,
+};
+
+// Durations MUST match section heights so keyframes align with sections:
+// Hero=100vh, About=100vh, Works=400vh, Overview=100vh, Web+Contact=200vh
+// Total = 900vh ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ durations: 1, 1, 4, 1, 2 (sum=9)
+const SCROLL_KEYFRAMES = [
+  // 1. Hero (100vh): fly INTO the torus ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ portal effect
+  {
+    rotX: 1.57,
+    rotY: 2.8,
+    rotZ: 0,
+    scale: 4.5,
+    posX: 0,
+    posY: 0,
+    camY: 0,
+    camZ: 4.5,
+    duration: 1,
+  },
+  // 2. About (100vh): exit portal ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ torus shrinks, arrives at Endurance position
+  //    Ring tilted toward camera but not fully face-on ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ more Interstellar angle
+  {
+    rotX: 0.85,          // moderate tilt ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ ring visible but elongated, not circular
+    rotY: 6.28,         // one full spin (2ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ)
+    rotZ: 0.15,
+    scale: 0.45,
+    posX: -0.45,         // pushed further left into the gap, fully visible
+    posY: 0,
+    camY: 0.25,
+    camZ: 4.2,
+    duration: 1,
+  },
+  // 3. Works (400vh): Endurance floating ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ torus holds angle,
+  //    slow spin, gentle drift. Weightless, dreamy, like docking scene.
+  {
+    rotX: 0.8,           // slightly less tilt over scroll for subtle movement
+    rotY: 12.56,
+    rotZ: 0.25,
+    scale: 0.5,
+    posX: -0.35,         // gentle drift but stays in gap
+    posY: -0.05,
+    camY: 0.25,
+    camZ: 4.0,
+    duration: 4,
+  },
+  // 4. Overview (100vh): torus grows, returns to center
+  {
+    rotX: 0.15,
+    rotY: 15.0,
+    rotZ: 0.12,
+    scale: 1.3,
+    posX: -0.12,
+    posY: 0,
+    camY: 0.4,
+    camZ: 3.2,
+    duration: 1,
+  },
+  // 5. World-Class Web (100vh): torus moves far right quickly
+  {
+    rotX: 0.35,
+    rotY: 18.0,
+    rotZ: -0.3,
+    scale: 0.35,
+    posX: 2.5,           // already far right before contact section
+    posY: 0.3,
+    camY: 0.5,
+    camZ: 5.0,
+    duration: 1,
+  },
+  // 6. Contact (100vh): torus stays far right, away from form
+  {
+    rotX: 0.35,
+    rotY: 19.5,
+    rotZ: -0.3,
+    scale: 0.3,
+    posX: 2.8,           // even further right, fully out of form area
+    posY: 0.4,
+    camY: 0.5,
+    camZ: 5.5,
+    duration: 1,
+  },
+];
+
+// ── CatmullRomCurve3 spline animation curves ──
+const torusPosCurve = new THREE.CatmullRomCurve3(
+  SCROLL_KEYFRAMES.map(kf => new THREE.Vector3(kf.posX, kf.posY, 0)),
+  false, 'centripetal'
+);
+const torusRotCurve = new THREE.CatmullRomCurve3(
+  SCROLL_KEYFRAMES.map(kf => new THREE.Vector3(kf.rotX, kf.rotY, kf.rotZ)),
+  false, 'centripetal'
+);
+const cameraCurve = new THREE.CatmullRomCurve3(
+  SCROLL_KEYFRAMES.map(kf => new THREE.Vector3(0, kf.camY, kf.camZ)),
+  false, 'centripetal'
+);
+const scaleCurve = new THREE.CatmullRomCurve3(
+  SCROLL_KEYFRAMES.map(kf => new THREE.Vector3(kf.scale, 0, 0)),
+  false, 'centripetal'
+);
+
+
+const ANIMATION = {
+  coilPhaseSpeed: 0.01,
+  breatheSpeed: 0.0005,
+  mouseLerpFactor: 0.03,
+  meshLerpFactor: 0.1,     // fast catch-up for snap scroll, still smooth
+  mouseInfluenceX: 0.15,
+  mouseInfluenceY: 0.15,
+  mouseRotationInfluence: 0.2,
+};
+
+const SUBTITLE = {
+  rotateInterval: 4500,
+  transitionDuration: 1600,
+  cleanupDelay: 1800,
+  modes: ['vertical', 'horizontal'],
+};
+
+const GRAIN = {
+  frameCount: 4,
+  intervalMs: 150,
+  opacity: 0.22,
+};
+
+// ============ TORUS ============
+const RING = TORUS.coilSegments + 1;
+const TOTAL_VERTS = (TORUS.pathSegments + 1) * RING;
+
+const posArray = new Float32Array(TOTAL_VERTS * 3);
+const normArray = new Float32Array(TOTAL_VERTS * 3);
+
+function warpT(t) {
+  return t + TORUS.asymmetry * Math.sin(t * Math.PI * 2) / (Math.PI * 2);
+}
+
+function updateTorusSlinky(phase, breathe) {
+  const breatheScale = 1 - breathe * 0.25;
+
+  let vi = 0, ni = 0;
+  for (let i = 0; i <= TORUS.pathSegments; i++) {
+    const t = i / TORUS.pathSegments;
+    const wt = warpT(t);
+    const theta = t * Math.PI * 2;
+    const phi = wt * TORUS.numCoils * Math.PI * 2 + phase;
+    const cosPhi = Math.cos(phi), sinPhi = Math.sin(phi);
+    const cosT = Math.cos(theta), sinT = Math.sin(theta);
+
+    const breatheWave = Math.sin(theta - breathe * Math.PI * 2) * 0.5 + 0.5;
+    const localBreathe = breatheScale + (1 - breatheScale) * breatheWave * 0.5;
+
+    const bottomFactor = (-sinT * 0.5 + 0.5);
+    const localCoilR = (TORUS.coilRadiusMin + (TORUS.coilRadiusMax - TORUS.coilRadiusMin) * bottomFactor
+      + 0.04 * Math.sin(theta * 3 + phase * 0.3)) * localBreathe;
+
+    const cx = (TORUS.radius + localCoilR * cosPhi) * cosT;
+    const cy = localCoilR * sinPhi;
+    const cz = (TORUS.radius + localCoilR * cosPhi) * sinT;
+
+    const t2 = (i + 1) / TORUS.pathSegments;
+    const wt2 = warpT(t2);
+    const th2 = t2 * Math.PI * 2, ph2 = wt2 * TORUS.numCoils * Math.PI * 2 + phase;
+    const sinT2 = Math.sin(th2), cosT2 = Math.cos(th2);
+    const bf2 = (-sinT2 * 0.5 + 0.5);
+    const breatheWave2 = Math.sin(th2 - breathe * Math.PI * 2) * 0.5 + 0.5;
+    const localBreathe2 = breatheScale + (1 - breatheScale) * breatheWave2 * 0.5;
+    const localCoilR2 = (TORUS.coilRadiusMin + (TORUS.coilRadiusMax - TORUS.coilRadiusMin) * bf2
+      + 0.04 * Math.sin(th2 * 3 + phase * 0.3)) * localBreathe2;
+    const nx = (TORUS.radius + localCoilR2 * Math.cos(ph2)) * cosT2;
+    const ny = localCoilR2 * Math.sin(ph2);
+    const nz = (TORUS.radius + localCoilR2 * Math.cos(ph2)) * sinT2;
+
+    let tx = nx-cx, ty = ny-cy, tz = nz-cz;
+    const tL = Math.sqrt(tx*tx+ty*ty+tz*tz)||1;
+    tx/=tL; ty/=tL; tz/=tL;
+
+    let rx = cx-TORUS.radius*cosT, ry = cy, rz = cz-TORUS.radius*sinT;
+    const rL = Math.sqrt(rx*rx+ry*ry+rz*rz)||1;
+    rx/=rL; ry/=rL; rz/=rL;
+
+    let bx=ty*rz-tz*ry, by=tz*rx-tx*rz, bz=tx*ry-ty*rx;
+    const bL=Math.sqrt(bx*bx+by*by+bz*bz)||1;
+    bx/=bL; by/=bL; bz/=bL;
+
+    let ux=by*tz-bz*ty, uy=bz*tx-bx*tz, uz=bx*ty-by*tx;
+    const uL=Math.sqrt(ux*ux+uy*uy+uz*uz)||1;
+    ux/=uL; uy/=uL; uz/=uL;
+
+    const wireR = TORUS.wireRadius * (1 + bottomFactor * 0.3);
+
+    for (let j = 0; j <= TORUS.coilSegments; j++) {
+      const a = (j/TORUS.coilSegments)*Math.PI*2;
+      const c=Math.cos(a), s=Math.sin(a);
+      posArray[vi++]=cx+wireR*(c*ux+s*bx);
+      posArray[vi++]=cy+wireR*(c*uy+s*by);
+      posArray[vi++]=cz+wireR*(c*uz+s*bz);
+      normArray[ni++]=c*ux+s*bx;
+      normArray[ni++]=c*uy+s*by;
+      normArray[ni++]=c*uz+s*bz;
+    }
+  }
+}
+
+function createGeometry() {
+  updateTorusSlinky(0, 0);
+  const idx=[];
+  for(let i=0;i<TORUS.pathSegments;i++)for(let j=0;j<TORUS.coilSegments;j++){
+    const a=i*RING+j, b=a+RING;
+    idx.push(a,b,a+1,a+1,b,b+1);
+  }
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.BufferAttribute(posArray,3));
+  g.setAttribute('normal',new THREE.BufferAttribute(normArray,3));
+  g.setIndex(idx);
+  return g;
+}
+
+// ============ SCENE ============
+let scene, camera, renderer, mesh, geo, orbitLights, scrollState;
+let coilPhase = 0;
+let mx = 0, my = 0;
+let smoothMx = 0, smoothMy = 0;
+
+function initScene() {
+  const canvas = document.getElementById('three-canvas');
+  if (!canvas) {
+    throw new Error('Canvas element with id "three-canvas" not found');
+  }
+
+  renderer = new THREE.WebGLRenderer({ canvas, antialias: RENDERER.antialias });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, RENDERER.pixelRatio));
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = RENDERER.toneMappingExposure;
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.setClearColor(RENDERER.backgroundColor, 1);
+
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x08081a);
+
+  camera = new THREE.PerspectiveCamera(
+    CAMERA.fov,
+    window.innerWidth / window.innerHeight,
+    CAMERA.near,
+    CAMERA.far
+  );
+  camera.position.set(
+    CAMERA.position.x,
+    CAMERA.position.y,
+    CAMERA.position.z
+  );
+  camera.lookAt(0, 0, 0);
+
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  const roomEnv = new RoomEnvironment(renderer);
+  scene.environment = pmrem.fromScene(roomEnv).texture;
+  roomEnv.dispose();
+
+  for (const lightConfig of LIGHTS.directional) {
+    const light = new THREE.DirectionalLight(lightConfig.color, lightConfig.intensity);
+    light.position.set(lightConfig.position.x, lightConfig.position.y, lightConfig.position.z);
+    scene.add(light);
+  }
+
+  scene.add(new THREE.AmbientLight(LIGHTS.ambient.color, LIGHTS.ambient.intensity));
+
+  orbitLights = [];
+  for (const lightConfig of LIGHTS.orbiting) {
+    const light = new THREE.PointLight(lightConfig.color, lightConfig.intensity, lightConfig.distance);
+    scene.add(light);
+    orbitLights.push({
+      light: light,
+      radius: lightConfig.radius,
+      speed: lightConfig.speed,
+      offsetY: lightConfig.offsetY,
+      phase: lightConfig.phase,
+    });
+  }
+
+  const mat = new THREE.MeshPhysicalMaterial({
+    color: MATERIAL.color,
+    metalness: MATERIAL.metalness,
+    roughness: MATERIAL.roughness,
+    clearcoat: MATERIAL.clearcoat,
+    clearcoatRoughness: MATERIAL.clearcoatRoughness,
+    reflectivity: MATERIAL.reflectivity,
+    envMapIntensity: MATERIAL.envMapIntensity,
+    ior: MATERIAL.ior,
+    iridescence: MATERIAL.iridescence,
+    iridescenceIOR: MATERIAL.iridescenceIOR,
+    iridescenceThicknessRange: MATERIAL.iridescenceThicknessRange,
+  });
+
+  geo = createGeometry();
+  mesh = new THREE.Mesh(geo, mat);
+  scene.add(mesh);
+
+  scrollState = {
+    rotX: SCROLL.initial.rotX,
+    rotY: SCROLL.initial.rotY,
+    rotZ: SCROLL.initial.rotZ,
+    scale: SCROLL.initial.scale,
+    posX: SCROLL.initial.posX,
+    posY: SCROLL.initial.posY,
+    camY: SCROLL.initial.camY,
+    camZ: 10, // start far away ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ entrance animation brings camera in
+    pathT: 0,
+  };
+
+  // Entrance combo: canvas fades in + camera drifts from depth
+  const threeCanvas = document.getElementById('three-canvas');
+  gsap.to(threeCanvas, {
+    opacity: 1,
+    duration: 2.0,
+    delay: 0.2,
+    ease: 'power1.inOut',
+  });
+  gsap.to(scrollState, {
+    camZ: SCROLL.initial.camZ,
+    duration: 3.0,
+    delay: 0.1,
+    ease: 'power2.out',
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    mx = (e.clientX / window.innerWidth - 0.5) * ANIMATION.mouseInfluenceX;
+    my = (e.clientY / window.innerHeight - 0.5) * ANIMATION.mouseInfluenceY;
+  });
+
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+
+  return { scene, camera, renderer, mesh, geo, orbitLights, scrollState };
+}
+
+function getScrollState() {
+  return scrollState;
+}
+
+function animate() {
+  requestAnimationFrame(animate);
+
+  coilPhase += ANIMATION.coilPhaseSpeed;
+  const breathe = (Math.sin(performance.now() * ANIMATION.breatheSpeed) * 0.5 + 0.5);
+  updateTorusSlinky(coilPhase, breathe);
+  geo.attributes.position.needsUpdate = true;
+  geo.computeVertexNormals();
+  geo.attributes.normal.needsUpdate = true;
+
+  const t = performance.now() * 0.001;
+  for (const ol of orbitLights) {
+    const angle = t * ol.speed + ol.phase;
+    ol.light.position.set(
+      Math.cos(angle) * ol.radius,
+      ol.offsetY + Math.sin(angle * 0.7) * 0.5,
+      Math.sin(angle) * ol.radius
+    );
+  }
+
+  smoothMx += (mx - smoothMx) * ANIMATION.mouseLerpFactor;
+  smoothMy += (my - smoothMy) * ANIMATION.mouseLerpFactor;
+
+// ── Evaluate CatmullRom curves ──
+  const _ct = scrollState.pathT || 0;
+  const _cPos = torusPosCurve.getPoint(_ct);
+  const _cRot = torusRotCurve.getPoint(_ct);
+  const _cCam = cameraCurve.getPoint(_ct);
+  const _cSc = scaleCurve.getPoint(_ct);
+  scrollState.posX = _cPos.x;
+  scrollState.posY = _cPos.y;
+  scrollState.rotX = _cRot.x;
+  scrollState.rotY = _cRot.y;
+  scrollState.rotZ = _cRot.z;
+  scrollState.camY = _cCam.y;
+  scrollState.camZ = _cCam.z;
+  scrollState.scale = _cSc.x;
+
+    const L = ANIMATION.meshLerpFactor;
+
+  mesh.rotation.x += (scrollState.rotX + smoothMy * ANIMATION.mouseRotationInfluence - mesh.rotation.x) * L;
+  mesh.rotation.y += (scrollState.rotY + smoothMx * ANIMATION.mouseRotationInfluence - mesh.rotation.y) * L;
+  mesh.rotation.z += (scrollState.rotZ - mesh.rotation.z) * L;
+
+  const s = scrollState.scale;
+  mesh.scale.x += (s - mesh.scale.x) * L;
+  mesh.scale.y += (s - mesh.scale.y) * L;
+  mesh.scale.z += (s - mesh.scale.z) * L;
+
+  mesh.position.x += (scrollState.posX - mesh.position.x) * L;
+  mesh.position.y += (scrollState.posY - mesh.position.y) * L;
+
+  camera.position.y += (scrollState.camY - camera.position.y) * L;
+  camera.position.z += (scrollState.camZ - camera.position.z) * L;
+  camera.lookAt(0, scrollState.camY, 0);
+
+  renderer.render(scene, camera);
+}
+
+// ============ SCROLL ANIMATIONS ============
+function initScrollAnim(scrollState) {
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Other sections ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ reveal on scroll
+  document.querySelectorAll('.section:not(.hero)').forEach(sec => {
+    const h = sec.querySelector('h2');
+    const p = sec.querySelector('p');
+
+    if (h) {
+      gsap.to(h, {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: sec,
+          start: 'top 70%',
+          end: 'top 30%',
+          scrub: false,
+        },
+      });
+    }
+
+    if (p) {
+      gsap.to(p, {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        delay: 0.15,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: sec,
+          start: 'top 65%',
+          end: 'top 25%',
+          scrub: false,
+        },
+      });
+    }
+  });
+
+  gsap.to('.about-text', {
+    opacity: 1,
+    y: 0,
+    duration: 0.8,
+    delay: 0.2,
+    ease: 'power2.out',
+    scrollTrigger: {
+      trigger: '#sec-features',
+      start: 'top 65%',
+      scrub: false,
+    },
+  });
+
+  // ---- Hide hero content when scrolling away (prevents text/torus overlap) ----
+  gsap.to('#sec-hero h2, #sec-hero .cta-portal, #sec-hero .rotating-subtitle', {
+    opacity: 0,
+    y: -60,
+    scrollTrigger: {
+      trigger: '#sec-hero',
+      start: 'top top',
+      end: '20% top',
+      scrub: true,
+    },
+  });
+
+  // ---- OUR WORK: Fullscreen Pinned Showcase ----
+  const slides = gsap.utils.toArray('.works-slide');
+  const images = gsap.utils.toArray('.works-img');
+  const worksCounter = document.getElementById('worksCounter');
+  const progressFill = document.getElementById('worksProgressFill');
+  const totalProjects = slides.length;
+  let currentProject = 0;
+
+  function showProject(index) {
+    if (index === currentProject && slides[index].classList.contains('is-active')) return;
+
+    const oldSlide = slides[currentProject];
+    const oldImg = images[currentProject];
+    const newSlide = slides[index];
+    const newImg = images[index];
+
+    // ---- Animate OUT old slide ----
+    gsap.to(oldSlide.querySelector('.works-title'), {
+      y: -40, opacity: 0, duration: 0.4, ease: 'power2.in',
+    });
+    gsap.to(oldSlide.querySelector('.works-desc'), {
+      y: -20, opacity: 0, duration: 0.3, ease: 'power2.in', delay: 0.05,
+    });
+    gsap.to(oldSlide.querySelector('.works-label'), {
+      x: -20, opacity: 0, duration: 0.3, ease: 'power2.in',
+    });
+    gsap.to(oldSlide.querySelector('.works-number'), {
+      opacity: 0, scale: 0.8, duration: 0.3, ease: 'power2.in',
+    });
+    gsap.to(oldSlide.querySelector('.works-tags'), {
+      y: 15, opacity: 0, duration: 0.25, ease: 'power2.in',
+    });
+    gsap.to(oldSlide.querySelector('.works-cta'), {
+      x: -15, opacity: 0, duration: 0.25, ease: 'power2.in',
+    });
+
+    // Old image: scale up + fade out (zoom out feeling)
+    gsap.to(oldImg, {
+      scale: 1.15, opacity: 0, duration: 0.6, ease: 'power2.inOut',
+    });
+
+    // Remove active class after exit animation
+    gsap.delayedCall(0.4, () => {
+      oldSlide.classList.remove('is-active');
+    });
+
+    // ---- Animate IN new slide ----
+    gsap.delayedCall(0.35, () => {
+      newSlide.classList.add('is-active');
+
+      gsap.fromTo(newSlide.querySelector('.works-number'),
+        { opacity: 0, scale: 1.2 },
+        { opacity: 1, scale: 1, duration: 0.6, ease: 'power2.out' }
+      );
+      gsap.fromTo(newSlide.querySelector('.works-label'),
+        { x: -30, opacity: 0 },
+        { x: 0, opacity: 1, duration: 0.5, ease: 'power2.out', delay: 0.1 }
+      );
+      gsap.fromTo(newSlide.querySelector('.works-title'),
+        { y: 50, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.7, ease: 'power3.out', delay: 0.15 }
+      );
+      gsap.fromTo(newSlide.querySelector('.works-desc'),
+        { y: 30, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6, ease: 'power2.out', delay: 0.25 }
+      );
+      gsap.fromTo(newSlide.querySelector('.works-tags'),
+        { y: 20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out', delay: 0.35 }
+      );
+      gsap.fromTo(newSlide.querySelector('.works-cta'),
+        { x: -20, opacity: 0 },
+        { x: 0, opacity: 1, duration: 0.5, ease: 'power2.out', delay: 0.4 }
+      );
+
+      // New image: zoom in from slightly smaller
+      gsap.fromTo(newImg,
+        { scale: 1.08, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.8, ease: 'power2.out' }
+      );
+    });
+
+    // Update progress + counter
+    if (worksCounter) {
+      worksCounter.textContent = '0' + (index + 1) + ' ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ 0' + totalProjects;
+    }
+    if (progressFill) {
+      progressFill.style.width = ((index + 1) / totalProjects * 100) + '%';
+    }
+
+    currentProject = index;
+  }
+
+  // ScrollTrigger: pin the viewport, divide scroll into project segments
+  ScrollTrigger.create({
+    trigger: '#sec-works',
+    start: 'top top',
+    end: 'bottom bottom',
+    scrub: false,
+    onUpdate: (self) => {
+      // Map scroll progress (0ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ1) to project index (0ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ3)
+      const raw = self.progress * totalProjects;
+      const idx = Math.min(Math.floor(raw), totalProjects - 1);
+      if (idx !== currentProject) {
+        showProject(idx);
+      }
+    },
+  });
+
+  // Initialize first project as visible
+  gsap.set(images[0], { opacity: 1, scale: 1 });
+  // ---- TORUS ANIMATION ----
+  // ALL torus positioning is driven by SCROLL_KEYFRAMES via the scrub timeline below.
+  // Direct gsap.to() calls were removed because they CONFLICT with scrub ÃÂ¢ÃÂÃÂ
+  // scrub overwrites values every frame, making direct animations useless.
+  // To change torus behavior in any section, edit SCROLL_KEYFRAMES above.
+  const threeCanvas = document.getElementById('three-canvas');
+  threeCanvas.style.pointerEvents = 'none';
+
+  // ---- CONTACT SECTION: Entrance animations ----
+  const contactTl = gsap.timeline({
+    scrollTrigger: {
+      trigger: '#sec-contact',
+      start: 'top 75%',
+      scrub: false,
+    },
+  });
+
+  contactTl.to('.contact-label', {
+    opacity: 1, y: 0, duration: 0.6, ease: 'power2.out',
+  });
+  contactTl.to('#sec-contact h2', {
+    opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
+  }, '-=0.3');
+  contactTl.to('.contact-sub', {
+    opacity: 1, y: 0, duration: 0.7, ease: 'power2.out',
+  }, '-=0.5');
+  contactTl.to('#contactFormWrap', {
+    opacity: 1, y: 0, duration: 1, ease: 'power3.out',
+  }, '-=0.4');
+  contactTl.to('#contactBottom', {
+    opacity: 1, duration: 0.8, ease: 'power2.out',
+  }, '-=0.4');
+
+  // scroll hint stays visible always ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ no fadeout on scroll
+
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: '.scroll-container',
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: SCROLL.scrub,
+    },
+  });
+
+  SCROLL_KEYFRAMES.forEach((keyframe, index) => {
+    const targetT = index / (SCROLL_KEYFRAMES.length - 1);
+    tl.to(scrollState, {
+      pathT: targetT,
+      ease: 'none',
+      duration: keyframe.duration,
+    });
+  })
+}
+
+// --- Boot sequence ---
+
+const sceneContext = initScene();
+const scrollStateRef = getScrollState();
+
+// Called when preloader finishes (from the inline script)
+function onSiteReady() {
+  initScrollAnim(scrollStateRef);
+
+  // Show scroll hint + track scroll direction
+  const hint = document.getElementById('scrollHint');
+  if (hint) {
+    gsap.set(hint, { opacity: 0 });
+    gsap.to(hint, { opacity: 1, duration: 1, delay: 1.8, ease: 'power2.out' });
+
+    let lastScrollY = window.scrollY;
+    window.addEventListener('scroll', () => {
+      const currentY = window.scrollY;
+      if (currentY > lastScrollY) {
+        hint.classList.remove('dir-up');
+      } else {
+        hint.classList.add('dir-up');
+      }
+      lastScrollY = currentY;
+    }, { passive: true });
+  }
+
+  // Hero content ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ each element has its own signature animation
+  const heroSec = document.querySelector('.section.hero');
+  if (heroSec) {
+    const heroH = heroSec.querySelector('h2');
+    const heroRot = heroSec.querySelector('.rotating-subtitle');
+    const heroCta = heroSec.querySelector('.cta-portal');
+
+    // 1. SUBTITLE ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ make container visible, first phrase flies in via diagonal slices
+    if (heroRot) {
+      gsap.set(heroRot, { opacity: 1 });
+    }
+
+    // 2. BRAND NAME ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ blur reveal (blurred ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ sharp) + fade
+    if (heroH) {
+      gsap.set(heroH, { filter: 'blur(20px)', opacity: 0, y: 0 });
+      gsap.to(heroH, {
+        filter: 'blur(0px)',
+        opacity: 1,
+        duration: 1.4,
+        delay: 0.6,
+        ease: 'power2.out',
+      });
+    }
+
+    // 3. BUTTON ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ scale pop + fade from below
+    if (heroCta) {
+      gsap.set(heroCta, { scale: 0.85, opacity: 0, y: 25 });
+      gsap.to(heroCta, {
+        scale: 1,
+        opacity: 1,
+        y: 0,
+        duration: 1.0,
+        delay: 1.0,
+        ease: 'back.out(1.4)',
+      });
+    }
+  }
+
+  initSubtitleRotatorFn();
+  initMagneticButtonFn();
+  initFullpage();
+
+  // 4. HEADER ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ staggered reveal with different characters per element
+  const headerLogo = document.querySelector('.header-logo');
+  const headerStatus = document.querySelector('.header-status');
+  const navItems = document.querySelectorAll('.nav-item');
+
+  // Logo drops in from above + slight rotation
+  if (headerLogo) {
+    gsap.set(headerLogo, { y: -15, opacity: 0, rotation: -5 });
+    gsap.to(headerLogo, {
+      y: 0, opacity: 1, rotation: 0,
+      duration: 0.5,
+      delay: 0.3,
+      ease: 'back.out(2)',
+    });
+  }
+
+  // Status line types in from left (clip reveal)
+  if (headerStatus) {
+    gsap.set(headerStatus, { clipPath: 'inset(0 100% 0 0)', opacity: 1, x: 0 });
+    gsap.to(headerStatus, {
+      clipPath: 'inset(0 0% 0 0)',
+      duration: 0.7,
+      delay: 0.6,
+      ease: 'power2.inOut',
+    });
+  }
+
+  // Nav items ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ Matrix-style text decode, staggered
+  const scrambleChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ01!@#$%&*';
+  const navDelays = [0.3, 0.55, 0.9]; // intentionally uneven
+
+  navItems.forEach((item, i) => {
+    const original = item.textContent;
+    item.textContent = '';
+    gsap.set(item, { opacity: 1 });
+
+    setTimeout(() => {
+      let iterations = 0;
+      const maxIterations = 12;
+      const interval = setInterval(() => {
+        item.textContent = original.split('').map((char, ci) => {
+          if (char === ' ') return ' ';
+          // Characters resolve left-to-right over time
+          if (ci < iterations - 3) return original[ci];
+          return scrambleChars[Math.floor(Math.random() * scrambleChars.length)];
+        }).join('');
+
+        iterations++;
+        if (iterations > maxIterations + original.length) {
+          clearInterval(interval);
+          item.textContent = original;
+          item.classList.add('glitch-ready');
+        }
+      }, 45);
+    }, navDelays[i] * 1000);
+  });
+}
+
+// Always start from top on page load / refresh
+window.scrollTo(0, 0);
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
+
+// Connect to preloader: if already done, run now; else register callback
+if (window.__preloaderDone) {
+  onSiteReady();
+} else {
+  window.__onPreloaderDone = onSiteReady;
+}
+
+// Start render loop immediately (torus renders behind preloader)
+animate();
+
+// Initialize components
+// ============ SUBTITLE ROTATOR ============
+function initSubtitleRotatorFn() {
+  const phrases = document.querySelectorAll('#rotatingSubtitle .phrase');
+  if (!phrases.length) return;
+
+  let current = 0;
+  const ease = 'power3.inOut';
+  const dur = 1.5;
+  const dist = 180; // percentage to fly from
+
+  // Animation modes: [sliceA-from, sliceB-from] per mode
+  const enterModes = [
+    // vertical: A from top, B from bottom
+    { a: { y: `-${dist}%` }, b: { y: `${dist}%` } },
+    // horizontal: A from left, B from right
+    { a: { x: `-${dist}%` }, b: { x: `${dist}%` } },
+  ];
+  const exitModes = [
+    // vertical: A goes up, B goes down
+    { a: { y: `-${dist}%` }, b: { y: `${dist}%` } },
+    // horizontal: A goes right, B goes left
+    { a: { x: `${dist}%` }, b: { x: `-${dist}%` } },
+  ];
+
+  function animateIn(phrase, modeIdx) {
+    const sliceA = phrase.querySelector('.slice-a');
+    const sliceB = phrase.querySelector('.slice-b');
+    const mode = enterModes[modeIdx % enterModes.length];
+
+    // Set starting positions
+    gsap.set(sliceA, { ...mode.a, opacity: 0 });
+    gsap.set(sliceB, { ...mode.b, opacity: 0 });
+
+    // Animate to center ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ slice A slightly faster
+    gsap.to(sliceA, { x: 0, y: 0, opacity: 1, duration: dur, ease, delay: 0.05 });
+    gsap.to(sliceB, { x: 0, y: 0, opacity: 1, duration: dur * 1.1, ease, delay: 0.15 });
+  }
+
+  function animateOut(phrase, modeIdx) {
+    const sliceA = phrase.querySelector('.slice-a');
+    const sliceB = phrase.querySelector('.slice-b');
+    const mode = exitModes[modeIdx % exitModes.length];
+
+    gsap.to(sliceA, { ...mode.a, opacity: 0, duration: dur * 0.8, ease });
+    gsap.to(sliceB, { ...mode.b, opacity: 0, duration: dur * 0.8, ease, delay: 0.05 });
+  }
+
+  // First phrase: fly in vertically
+  animateIn(phrases[0], 0);
+
+  function next() {
+    const exitMode = current % 2;
+    const enterMode = (current + 1) % 2;
+
+    const old = phrases[current];
+    const nextIdx = (current + 1) % phrases.length;
+    const fresh = phrases[nextIdx];
+
+    animateOut(old, exitMode);
+    // Delay enter slightly so exit starts first
+    setTimeout(() => animateIn(fresh, enterMode), 300);
+
+    current = nextIdx;
+  }
+
+  setInterval(next, SUBTITLE.rotateInterval);
+}
+
+// ============ MAGNETIC BUTTON ============
+function initMagneticButtonFn() {
+  const btn = document.querySelector('.cta-portal');
+  if (!btn) return;
+  btn.addEventListener('mousemove', (e) => {
+    const rect = btn.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width * 100);
+    const y = ((e.clientY - rect.top) / rect.height * 100);
+    btn.style.setProperty('--mx', x + '%');
+    btn.style.setProperty('--my', y + '%');
+  });
+  btn.addEventListener('mouseleave', () => {
+    btn.style.setProperty('--mx', '50%');
+    btn.style.setProperty('--my', '50%');
+  });
+}
+
+// ============ FULLPAGE SCROLL (1 scroll = 1 section) ============
+function initFullpage() {
+  gsap.registerPlugin(ScrollToPlugin);
+
+  const DURATION = 0.9;
+  const TRACKPAD_DEBOUNCE = 80;
+  const TOUCH_THRESHOLD = 40;
+
+  // Build stops: each 100vh slice = 1 stop
+  let stops = [];
+  let currentStop = 0;
+  let isAnimating = false;
+  let wheelAccum = 0;
+  let wheelTimer = null;
+  let touchStartY = 0;
+
+  function buildStops() {
+    const secs = document.querySelectorAll('.scroll-container > section');
+    const vh = window.innerHeight;
+    stops = [];
+    secs.forEach(sec => {
+      const top = sec.offsetTop;
+      const count = Math.max(1, Math.round(sec.offsetHeight / vh));
+      for (let i = 0; i < count; i++) stops.push(top + i * vh);
+    });
+    console.log('[Fullpage] ' + stops.length + ' stops');
+  }
+
+  function getClosestStop() {
+    const y = window.scrollY;
+    let best = 0, bestD = Infinity;
+    stops.forEach((p, i) => { const d = Math.abs(p - y); if (d < bestD) { bestD = d; best = i; } });
+    return best;
+  }
+
+  function getCurrentSection() {
+    const y = stops[currentStop] || 0;
+    const secs = document.querySelectorAll('.scroll-container > section');
+    for (const sec of secs) {
+      if (y >= sec.offsetTop && y < sec.offsetTop + sec.offsetHeight) return sec;
+    }
+    return null;
+  }
+
+  function canScrollInside(dir) {
+    const sec = getCurrentSection();
+    if (!sec) return false;
+    const ov = getComputedStyle(sec).overflowY;
+    if (ov !== 'auto' && ov !== 'scroll') return false;
+    if (sec.scrollHeight <= sec.clientHeight + 2) return false;
+    return dir > 0
+      ? sec.scrollTop + sec.clientHeight < sec.scrollHeight - 2
+      : sec.scrollTop > 2;
+  }
+
+  function goTo(index, dur) {
+    if (index < 0 || index >= stops.length || isAnimating) return;
+    isAnimating = true;
+    currentStop = index;
+    gsap.to(window, {
+      scrollTo: { y: stops[index], autoKill: false },
+      duration: dur || DURATION,
+      ease: 'power2.inOut',
+      onComplete: function() { isAnimating = false; },
+    });
+  }
+
+  function step(dir) {
+    if (isAnimating) return;
+    if (canScrollInside(dir)) return;
+    const next = currentStop + dir;
+    if (next >= 0 && next < stops.length) goTo(next);
+  }
+
+  // Wheel (mouse + trackpad)
+  window.addEventListener('wheel', function(e) {
+    var dir = e.deltaY > 0 ? 1 : -1;
+    if (canScrollInside(dir)) return;
+    e.preventDefault();
+    if (isAnimating) return;
+    wheelAccum += e.deltaY;
+    clearTimeout(wheelTimer);
+    wheelTimer = setTimeout(function() {
+      if (Math.abs(wheelAccum) > 5) step(wheelAccum > 0 ? 1 : -1);
+      wheelAccum = 0;
+    }, TRACKPAD_DEBOUNCE);
+  }, { passive: false });
+
+  // Touch
+  window.addEventListener('touchstart', function(e) { touchStartY = e.touches[0].clientY; }, { passive: true });
+  window.addEventListener('touchend', function(e) {
+    var diff = touchStartY - e.changedTouches[0].clientY;
+    if (Math.abs(diff) < TOUCH_THRESHOLD) return;
+    var dir = diff > 0 ? 1 : -1;
+    if (!canScrollInside(dir)) step(dir);
+  }, { passive: false });
+
+  // Keyboard
+  window.addEventListener('keydown', function(e) {
+    switch (e.key) {
+      case 'ArrowDown': case 'PageDown': case ' ':
+        e.preventDefault(); step(1); break;
+      case 'ArrowUp': case 'PageUp':
+        e.preventDefault(); step(-1); break;
+      case 'Home': e.preventDefault(); goTo(0); break;
+      case 'End': e.preventDefault(); goTo(stops.length - 1); break;
+    }
+  });
+
+  // Resize: rebuild + re-snap
+  var rTimer;
+  window.addEventListener('resize', function() {
+    clearTimeout(rTimer);
+    rTimer = setTimeout(function() {
+      buildStops();
+      currentStop = getClosestStop();
+      goTo(currentStop, 0.25);
+    }, 200);
+  });
+
+  buildStops();
+  currentStop = getClosestStop();
+}
+
+// ============ GRAIN ============
+// (Moved to early inline script for instant rendering during preloader)
+
+console.log('[AI Agency] All modules initialized.');
+</script>
+
+</body>
+</html>
