@@ -1,0 +1,192 @@
+/* =============================================
+   TALLY CUSTOM CSS — AI Agency Dark Theme
+   Скопируй весь этот код в:
+   Tally → Form → Design → Custom CSS
+   ============================================= */
+
+/* -- Общий фон и шрифт -- */
+body, .tally-form {
+  background: transparent !important;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  color: rgba(255,255,255,0.85) !important;
+}
+
+/* -- Заголовки блоков / labels -- */
+.tally-form h1,
+.tally-form h2,
+.tally-form h3 {
+  font-family: 'Instrument Serif', Georgia, serif !important;
+  color: #fff !important;
+  font-weight: 400 !important;
+}
+
+.tally-form label,
+.tally-form p,
+.tally-form span {
+  color: rgba(255,255,255,0.55) !important;
+}
+
+/* -- Все поля ввода -- */
+.tally-form input,
+.tally-form textarea,
+.tally-form select,
+div[class*='tally-block-input'] input,
+div[class*='tally-block-input'] textarea {
+  background: rgba(255,255,255,0.03) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 12px !important;
+  color: rgba(255,255,255,0.85) !important;
+  font-family: 'Inter', system-ui, sans-serif !important;
+  font-size: 0.92rem !important;
+  font-weight: 300 !important;
+  padding: 0.9rem 1.1rem !important;
+  transition: border-color 0.4s, background 0.4s, box-shadow 0.4s !important;
+  -webkit-appearance: none !important;
+}
+
+/* -- Placeholder -- */
+.tally-form input::placeholder,
+.tally-form textarea::placeholder {
+  color: rgba(255,255,255,0.15) !important;
+}
+
+/* -- Focus state с градиентным glow -- */
+.tally-form input:focus,
+.tally-form textarea:focus,
+.tally-form select:focus {
+  border-color: rgba(0,197,230,0.3) !important;
+  background: rgba(255,255,255,0.05) !important;
+  box-shadow: 0 0 0 3px rgba(0,197,230,0.06), 0 0 30px rgba(0,197,230,0.04) !important;
+  outline: none !important;
+}
+
+/* -- Dropdown select -- */
+.tally-block-dropdown select,
+.tally-block-dropdown > div > div {
+  background: rgba(255,255,255,0.03) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 12px !important;
+  color: rgba(255,255,255,0.85) !important;
+}
+
+/* -- Multiple choice / radio / checkbox -- */
+.tally-block-multiple-choice-option > div > div,
+.tally-block-checkbox > div > div {
+  background: rgba(255,255,255,0.03) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 10px !important;
+  color: rgba(255,255,255,0.7) !important;
+  transition: border-color 0.3s, background 0.3s !important;
+}
+
+.tally-block-multiple-choice-option > div > div:hover,
+.tally-block-checkbox > div > div:hover {
+  border-color: rgba(255,255,255,0.15) !important;
+  background: rgba(255,255,255,0.05) !important;
+}
+
+/* -- Кнопка Submit с градиентом -- */
+.tally-submit-button button {
+  font-family: 'Inter', system-ui, sans-serif !important;
+  font-size: 0.78rem !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.15em !important;
+  text-transform: uppercase !important;
+  color: #fff !important;
+  background: linear-gradient(135deg, rgba(232,83,242,0.2), rgba(0,197,230,0.2)) !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  border-radius: 60px !important;
+  padding: 1rem 2.4rem !important;
+  cursor: pointer !important;
+  transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1) !important;
+  min-width: 200px !important;
+}
+
+.tally-submit-button button:hover {
+  background: linear-gradient(135deg, rgba(232,83,242,0.5), rgba(0,197,230,0.5)) !important;
+  border-color: rgba(255,255,255,0.35) !important;
+  color: #fff !important;
+  transform: translateY(-3px) scale(1.03) !important;
+  box-shadow:
+    0 0 20px rgba(0,197,230,0.3),
+    0 0 60px rgba(232,83,242,0.15),
+    0 8px 40px rgba(0,0,0,0.3) !important;
+}
+
+/* -- Next / Back кнопки (multi-step) -- */
+.tally-form button[type="button"] {
+  color: rgba(255,255,255,0.5) !important;
+  background: transparent !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  border-radius: 60px !important;
+  padding: 0.7rem 1.6rem !important;
+  font-family: 'Inter', system-ui, sans-serif !important;
+  font-size: 0.75rem !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  transition: all 0.3s !important;
+}
+
+.tally-form button[type="button"]:hover {
+  border-color: rgba(255,255,255,0.2) !important;
+  color: rgba(255,255,255,0.8) !important;
+}
+
+/* -- Full width inputs -- */
+div[class*='tally-block-input'] > div > div,
+.tally-block-dropdown > div > div,
+.tally-block-multiple-choice-option > div > div,
+.tally-block-checkbox > div > div,
+.tally-block-multi-select > div > div {
+  min-width: 100% !important;
+}
+
+/* -- Dividers / horizontal rules -- */
+.tally-form hr {
+  border-color: rgba(255,255,255,0.05) !important;
+}
+
+/* -- File upload area -- */
+.tally-block-file-upload > div {
+  background: rgba(255,255,255,0.02) !important;
+  border: 1px dashed rgba(255,255,255,0.08) !important;
+  border-radius: 12px !important;
+  color: rgba(255,255,255,0.3) !important;
+}
+
+/* -- Progress bar (multi-step forms) -- */
+.tally-form [role="progressbar"],
+.tally-form progress {
+  background: rgba(255,255,255,0.05) !important;
+  border-radius: 100px !important;
+}
+
+.tally-form [role="progressbar"] > div,
+.tally-form progress::-webkit-progress-value {
+  background: linear-gradient(90deg, rgb(232,83,242), rgb(0,197,230)) !important;
+  border-radius: 100px !important;
+}
+
+/* -- "Thank you" / success page -- */
+.tally-form [data-testid="thank-you-page"] h2,
+.tally-form [data-testid="thank-you-page"] p {
+  color: rgba(255,255,255,0.7) !important;
+}
+
+/* -- Убираем лишние белые фоны -- */
+.tally-form > div,
+.tally-form [class*="block"] {
+  background: transparent !important;
+}
+
+/* -- Scrollbar внутри формы -- */
+.tally-form ::-webkit-scrollbar {
+  width: 4px;
+}
+.tally-form ::-webkit-scrollbar-track {
+  background: transparent;
+}
+.tally-form ::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.1);
+  border-radius: 4px;
+}

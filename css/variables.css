@@ -1,0 +1,15 @@
+:root {
+  --bg-primary: #08081a;
+  --text-primary: #fff;
+  --text-muted: rgba(255,255,255,0.55);
+  --text-dim: rgba(255,255,255,0.35);
+  --card-bg: rgba(255,255,255,0.03);
+  --card-border: rgba(255,255,255,0.06);
+  --card-hover-bg: rgba(255,255,255,0.05);
+  --card-hover-border: rgba(255,255,255,0.12);
+  --gradient-pink: rgb(232,83,242);
+  --gradient-cyan: rgb(0,197,230);
+  --gradient-blue: rgb(29,99,255);
+  --font-serif: 'Instrument Serif', Georgia, serif;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+}

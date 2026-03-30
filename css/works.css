@@ -1,0 +1,94 @@
+/* ——— Portfolio / Works Section ——— */
+.works-section {
+  height: 100vh;
+  padding: 5vh 0;
+  pointer-events: auto;
+  overflow: hidden;
+}
+
+.works-section .section-title {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  font-weight: 400;
+  color: #fff;
+  text-align: center;
+  margin-bottom: 5vh;
+  padding: 0 6%;
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+.works-grid {
+  display: flex;
+  gap: 2rem;
+  padding: 0 6%;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.works-grid::-webkit-scrollbar {
+  display: none;
+}
+
+.work-card {
+  flex: 0 0 380px;
+  scroll-snap-align: start;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+  padding: 2rem;
+  opacity: 0;
+  transform: translateY(50px);
+  transition: border-color 0.3s, background 0.3s;
+}
+
+.work-card:hover {
+  border-color: rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.05);
+}
+
+.work-card h3 {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: clamp(1.3rem, 2vw, 1.8rem);
+  font-weight: 400;
+  color: #fff;
+  margin-bottom: 1rem;
+}
+
+.work-card p {
+  font-size: 0.9rem;
+  font-weight: 300;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.7;
+  max-width: none;
+  text-align: left;
+  opacity: 1;
+  transform: none;
+  margin-top: 0;
+}
+
+.work-card .card-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 0.6rem;
+}
+
+.work-card .card-image {
+  width: 100%;
+  aspect-ratio: 16/10;
+  background: rgba(255,255,255,0.04);
+  border-radius: 10px;
+  margin-top: 1.5rem;
+  border: 1px solid rgba(255,255,255,0.06);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,0.15);
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+}

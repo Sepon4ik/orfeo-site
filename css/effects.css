@@ -1,0 +1,87 @@
+/* Film grain noise overlay */
+#grain-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0.22;
+}
+
+/* Wandering ambient light blobs */
+.ambient-lights {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+  mix-blend-mode: screen;
+}
+
+.ambient-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(200px);
+  opacity: 0.3;
+  will-change: transform;
+}
+
+.blob-1 {
+  width: 900px; height: 900px;
+  background: radial-gradient(circle, rgba(100,60,200,0.5) 0%, transparent 70%);
+  animation: wander1 24s ease-in-out infinite alternate;
+}
+
+.blob-2 {
+  width: 800px; height: 800px;
+  background: radial-gradient(circle, rgba(0,160,255,0.45) 0%, transparent 70%);
+  animation: wander2 30s ease-in-out infinite alternate;
+}
+
+.blob-3 {
+  width: 750px; height: 750px;
+  background: radial-gradient(circle, rgba(200,40,120,0.35) 0%, transparent 70%);
+  animation: wander3 28s ease-in-out infinite alternate;
+}
+
+@keyframes wander1 {
+  0%   { transform: translate(-30vw, -20vh); }
+  20%  { transform: translate(70vw, 10vh); }
+  40%  { transform: translate(20vw, 80vh); }
+  60%  { transform: translate(90vw, 50vh); }
+  80%  { transform: translate(-10vw, 40vh); }
+  100% { transform: translate(50vw, -15vh); }
+}
+
+@keyframes wander2 {
+  0%   { transform: translate(90vw, 80vh); }
+  20%  { transform: translate(-20vw, 40vh); }
+  40%  { transform: translate(60vw, -15vh); }
+  60%  { transform: translate(10vw, 70vh); }
+  80%  { transform: translate(80vw, 20vh); }
+  100% { transform: translate(-10vw, 90vh); }
+}
+
+@keyframes wander3 {
+  0%   { transform: translate(40vw, -20vh); }
+  20%  { transform: translate(-15vw, 60vh); }
+  40%  { transform: translate(85vw, 80vh); }
+  60%  { transform: translate(30vw, -10vh); }
+  80%  { transform: translate(70vw, 50vh); }
+  100% { transform: translate(-20vw, 30vh); }
+}
+
+/* Scroll indicator */
+.scroll-hint {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255,255,255,0.25);
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  z-index: 2;
+  transition: opacity 0.5s;
+}

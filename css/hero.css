@@ -1,0 +1,201 @@
+.section.hero {
+  position: relative;
+  justify-content: center;
+}
+
+/* CTA now lives inside hero — no separate section needed */
+
+.section.hero h2 {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: clamp(3rem, 6.5vw, 5.5rem);
+  font-weight: 400;
+  letter-spacing: normal;
+  color: #ffffff;
+  position: relative;
+  z-index: 10000;
+  line-height: 1.2;
+}
+
+/* Gradient accent on "AI" — exact Orfeo colors */
+.gradient-text {
+  background: -webkit-linear-gradient(1deg, rgb(232,83,242) -5%, rgb(0,197,230) 60%, rgb(29,99,255) 80%, rgb(232,83,242) 110%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-style: italic;
+}
+
+/* ——— Magnetic Border CTA Button ——— */
+.cta-portal {
+  --mx: 50%;
+  --my: 50%;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+  margin-top: 2.5rem;
+  padding: 1em 2.4em;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: clamp(0.85rem, 1.2vw, 1rem);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.85);
+  background:
+    linear-gradient(
+      105deg,
+      transparent 0%,
+      transparent 35%,
+      rgba(232,83,242,0.08) 42%,
+      rgba(0,197,230,0.12) 50%,
+      rgba(29,99,255,0.08) 58%,
+      transparent 65%,
+      transparent 100%
+    ),
+    rgba(255,255,255,0.03);
+  background-size: 300% 100%, 100% 100%;
+  background-position: 100% 0, 0 0;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 60px;
+  cursor: pointer;
+  z-index: 10000;
+  pointer-events: auto;
+  text-decoration: none;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: color 0.3s, border-color 0.3s;
+  animation: shimmer 4s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 100% 0, 0 0; }
+  50%  { background-position: -100% 0, 0 0; }
+  100% { background-position: 100% 0, 0 0; }
+}
+
+/* Gradient glow that follows the cursor */
+.cta-portal::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 62px;
+  padding: 2px;
+  background: radial-gradient(
+    circle 120px at var(--mx) var(--my),
+    rgb(232,83,242),
+    rgb(0,197,230) 40%,
+    transparent 70%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+/* Soft outer glow following cursor */
+.cta-portal::after {
+  content: '';
+  position: absolute;
+  inset: -12px;
+  border-radius: 72px;
+  background: radial-gradient(
+    circle 100px at var(--mx) var(--my),
+    rgba(232,83,242,0.25),
+    rgba(0,197,230,0.15) 40%,
+    transparent 70%
+  );
+  filter: blur(18px);
+  opacity: 0;
+  transition: opacity 0.4s;
+  z-index: -1;
+}
+
+.cta-portal:hover {
+  color: #ffffff;
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.12);
+}
+
+.cta-portal:hover::before {
+  opacity: 1;
+}
+
+.cta-portal:hover::after {
+  opacity: 1;
+}
+
+.cta-portal .arrow {
+  display: inline-flex;
+  transition: transform 0.3s;
+}
+
+.cta-portal:hover .arrow {
+  transform: translateX(4px);
+}
+
+/* Rotating subtitle — criss-cross container */
+.rotating-subtitle {
+  margin-top: 1.2rem;
+  height: 44px;
+  opacity: 0;
+  transform: translateY(30px);
+  overflow: hidden;
+  position: relative;
+  text-align: center;
+  z-index: 10000;
+}
+
+.rotating-subtitle .phrase {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 44px;
+  line-height: 44px;
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.rotating-subtitle .phrase.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.rotating-subtitle .phrase .half {
+  display: inline-block;
+  font-size: clamp(1rem, 1.8vw, 1.4rem);
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #ffffff;
+  white-space: nowrap;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.rotating-subtitle .phrase .half span {
+  color: #ffffff;
+  -webkit-text-fill-color: #ffffff;
+  font-weight: 500;
+}
+
+/* ——— Entry states (before becoming active) ——— */
+/* Vertical mode: left-half from below, right-half from above */
+.phrase.enter-vertical .half-left  { transform: translateY(60px);  opacity: 0; }
+.phrase.enter-vertical .half-right { transform: translateY(-60px); opacity: 0; }
+
+/* Horizontal mode: left-half from left, right-half from right */
+.phrase.enter-horizontal .half-left  { transform: translateX(-80px); opacity: 0; }
+.phrase.enter-horizontal .half-right { transform: translateX(80px);  opacity: 0; }
+
+/* ——— Active: everything settles to center ——— */
+.phrase.active .half { transform: translate(0, 0); opacity: 1; }
+
+/* ——— Exit states ——— */
+.phrase.exit-vertical .half-left  { transform: translateY(-60px); opacity: 0; }
+.phrase.exit-vertical .half-right { transform: translateY(60px);  opacity: 0; }
+
+.phrase.exit-horizontal .half-left  { transform: translateX(80px);  opacity: 0; }
+.phrase.exit-horizontal .half-right { transform: translateX(-80px); opacity: 0; }

@@ -1,0 +1,32 @@
+/* ——— About / What We Do section ——— */
+.section.about-section {
+  height: 100vh;
+  justify-content: center;
+  padding: 0 10%;
+}
+
+.about-title {
+  font-family: 'Instrument Serif', Georgia, serif !important;
+  font-size: clamp(2.5rem, 5.5vw, 4.5rem) !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase;
+}
+
+.about-text {
+  max-width: 600px;
+  margin-top: 3rem;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.about-text p {
+  font-size: clamp(0.9rem, 1.3vw, 1.05rem);
+  font-weight: 300;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+  opacity: 1;
+  transform: none;
+}
