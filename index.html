@@ -1793,6 +1793,13 @@ const SCROLL_KEYFRAMES = [
   },
 ];
 
+      // ---- CURVE-BASED POSITION PATHS (CatmullRomCurve3) ----
+      const TORUS_PATH_POINTS = SCROLL_KEYFRAMES.map(kf => new THREE.Vector3(kf.posX, kf.posY, 0));
+      const CAMERA_PATH_POINTS = SCROLL_KEYFRAMES.map(kf => new THREE.Vector3(0, kf.camY, kf.camZ));
+      const torusPositionCurve = new THREE.CatmullRomCurve3(TORUS_PATH_POINTS, false, 'catmullrom', 0.5);
+      const cameraMotionCurve = new THREE.CatmullRomCurve3(CAMERA_PATH_POINTS, false, 'catmullrom', 0.5);
+      const TOTAL_KF_DURATION = SCROLL_KEYFRAMES.reduce((sum, kf) => sum + kf.duration, 0);
+
 const ANIMATION = {
   coilPhaseSpeed: 0.01,
   breatheSpeed: 0.0005,
@@ -2066,12 +2073,18 @@ function animate() {
   mesh.scale.y += (s - mesh.scale.y) * L;
   mesh.scale.z += (s - mesh.scale.z) * L;
 
-  mesh.position.x += (scrollState.posX - mesh.position.x) * L;
-  mesh.position.y += (scrollState.posY - mesh.position.y) * L;
-
-  camera.position.y += (scrollState.camY - camera.position.y) * L;
-  camera.position.z += (scrollState.camZ - camera.position.z) * L;
-  camera.lookAt(0, scrollState.camY, 0);
+  // ---- Curve-based position (CatmullRomCurve3 spline) ----
+  const scrollTriggers = ScrollTrigger.getAll();
+  const scrollT = scrollTriggers.length > 0 ? Math.min(Math.max(scrollTriggers[0].progress, 0), 1) : 0;
+  const torusTarget = torusPositionCurve.getPointAt(scrollT);
+  mesh.position.x += (torusTarget.x - mesh.position.x) * L;
+  mesh.position.y += (torusTarget.y - mesh.position.y) * L;
+  
+  // ---- Curve-based camera ----
+  const camTarget = cameraMotionCurve.getPointAt(scrollT);
+  camera.position.y += (camTarget.y - camera.position.y) * L;
+  camera.position.z += (camTarget.z - camera.position.z) * L;
+  camera.lookAt(0, camTarget.y, 0);
 
   renderer.render(scene, camera);
 }
