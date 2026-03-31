@@ -1203,6 +1203,8 @@ body {
 .header-status { animation: clip-safety 0.5s ease 2.5s forwards; }
 .nav-item { animation: header-safety 0.3s ease 1.5s forwards; }
 </style>
+
+<script>if("scrollRestoration"in history)history.scrollRestoration="manual";window.scrollTo(0,0);</script>
 </head>
 <body>
 
@@ -2487,11 +2489,7 @@ function onSiteReady() {
   });
 }
 
-// Always start from top on page load / refresh
-window.scrollTo(0, 0);
-if ('scrollRestoration' in history) {
-  history.scrollRestoration = 'manual';
-}
+// Scroll reset moved to early <script> in <head> for proper timing
 
 // Connect to preloader: if already done, run now; else register callback
 if (window.__preloaderDone) {
