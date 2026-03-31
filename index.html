@@ -1737,6 +1737,18 @@ const SCROLL = {
 // Hero=100vh, About=100vh, Works=400vh, Overview=100vh, Web+Contact=200vh
 // Total = 900vh → durations: 1, 1, 4, 1, 2 (sum=9)
 const SCROLL_KEYFRAMES = [
+  // 0. Initial hold — torus stays at SCROLL.initial for hero top
+  {
+    rotX: -0.45,
+    rotY: 0.25,
+    rotZ: -0.12,
+    scale: 1,
+    posX: 0,
+    posY: 0.15,
+    camY: 0.6,
+    camZ: 3.5,
+    duration: 1,
+  },
   // 1. Hero (100vh): fly INTO the torus — portal effect
   {
     rotX: 1.57,
