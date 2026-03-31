@@ -2079,7 +2079,7 @@ function initScrollAnim(scrollState) {
           trigger: sec,
           start: 'top 70%',
           end: 'top 30%',
-          scrub: false,
+          toggleActions: 'play reverse play reverse',
         },
       });
     }
@@ -2095,7 +2095,7 @@ function initScrollAnim(scrollState) {
           trigger: sec,
           start: 'top 65%',
           end: 'top 25%',
-          scrub: false,
+          toggleActions: 'play reverse play reverse',
         },
       });
     }
@@ -2110,19 +2110,19 @@ function initScrollAnim(scrollState) {
     scrollTrigger: {
       trigger: '#sec-features',
       start: 'top 65%',
-      scrub: false,
+      toggleActions: 'play reverse play reverse',
     },
   });
 
   // ---- Hide hero content when scrolling away (prevents text/torus overlap) ----
-  gsap.to('#sec-hero h2, #sec-hero .cta-portal, #sec-hero .rotating-subtitle', {
+  gsap.fromTo('#sec-hero h2, #sec-hero .cta-portal, #sec-hero .rotating-subtitle', { opacity: 1, y: 0 }, {
     opacity: 0,
     y: -60,
     scrollTrigger: {
       trigger: '#sec-hero',
       start: 'top top',
       end: '20% top',
-      scrub: true,
+      toggleActions: 'play none none reverse',
     },
   });
 
