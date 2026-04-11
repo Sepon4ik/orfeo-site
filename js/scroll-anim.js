@@ -139,22 +139,15 @@ export function init(scrollState) {
     },
   });
 
-  // Add all 5 keyframe transitions from config
-  SCROLL_KEYFRAMES.forEach((keyframe, index) => {
+  // Add all 5 keyframe transitions from config.
+  // Per-segment easing (power2.inOut) сглаживает стыки между секциями —
+  // линейный 'none' давал резкие смены скорости на каждом keyframe-границе.
+  SCROLL_KEYFRAMES.forEach((keyframe) => {
     const { duration, ...animationProps } = keyframe;
-
-    if (index === 0) {
-      tl.to(scrollState, {
-        ...animationProps,
-        ease: 'none',
-        duration,
-      });
-    } else {
-      tl.to(scrollState, {
-        ...animationProps,
-        ease: 'none',
-        duration,
-      });
-    }
+    tl.to(scrollState, {
+      ...animationProps,
+      ease: 'power2.inOut',
+      duration,
+    });
   });
 }

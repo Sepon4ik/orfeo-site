@@ -2,6 +2,19 @@
  *  SITE CONFIGURATION — All magic numbers & settings
  *  ============================================ */
 
+/** Brand identity — single source of truth.
+ *  Меняешь имя бренда здесь — и весь сайт обновляется через [data-brand].
+ *  Никогда не хардкодь название бренда в index.html напрямую. */
+export const BRAND = {
+  name: 'ORFEO',
+  tagline: 'AI студия одного оператора',
+  founder: 'Павел Дранчук',
+  contactEmail: 'paveldranchuk36@gmail.com', // TODO: заменить на hello@<домен> когда выберем
+  geo: 'Польша · удалённо',
+  langs: ['RU', 'EN'],
+  responseTime: 'в течение 24 часов',
+};
+
 /** Torus slinky geometry parameters */
 export const TORUS = {
   radius: 1.0,              // Main ring radius
@@ -130,70 +143,88 @@ export const SCROLL = {
     camY: 0.6,              // Camera height
     camZ: 3.5,              // Camera depth
   },
-  scrub: 3,                 // Scrub value: higher = softer, more elastic lag
-  lerp: 0.045,              // Lerp constant for springy cushioning on top of scrub
+  scrub: 1.5,               // Scrub: lower = tighter follow, higher = elastic lag
+  lerp: 0.055,              // Lerp constant for springy cushioning on top of scrub
 };
 
-/** Scroll timeline keyframes (5 transitions between 6 sections) */
+/** Safety bounds — torus must NEVER hide off-screen.
+ *  Applied as a clamp in scene.js animate() loop, viewport-aware.
+ *  Любой keyframe ниже scaleMin или вне посX/Y bounds clampается на лету. */
+export const TORUS_BOUNDS = {
+  scaleMin: 0.55,           // Minimum visible scale — below this torus is "lost"
+  scaleMax: 2.0,            // Cap to avoid clipping camera frustum / engulfing screen
+  // viewportMargin = доля видимой полу-ширины/высоты, в которую разрешено заехать центру
+  // 0.55 означает: центр торуса не дальше чем на 55% от центра к краю экрана
+  viewportMargin: 0.55,
+};
+
+/** Scroll timeline keyframes (5 transitions between 6 sections).
+ *
+ *  RULES (нарушать = торус исчезает с экрана):
+ *  • scale: всегда в [0.55, 2.0]
+ *  • posX: в [-0.5, 0.5] — на мобильном с aspect ~0.5 это безопасно
+ *  • posY: в [-0.5, 0.5]
+ *  • Никаких "fly into portal" / "fly away" эффектов. Торус — всегда в кадре.
+ */
 export const SCROLL_KEYFRAMES = [
-  // Hero → About (gentle approach + flip into portal)
+  // Hero → About: tilt, slight zoom, shift LEFT to give text room
   {
-    rotX: 1.57,
-    rotY: 2.8,
-    rotZ: 0,
-    scale: 4.5,
-    posX: 0,
-    posY: 0,
-    camY: 0,
-    camZ: 4.5,
+    rotX: 0.6,
+    rotY: 1.8,
+    rotZ: -0.05,
+    scale: 1.4,
+    posX: -0.35,
+    posY: -0.05,
+    camY: 0.4,
+    camZ: 4.0,
     duration: 2,
   },
-  // About → Works (exit portal, spin, fly away)
+  // About → Works: shift to opposite (right) side, smaller — text dominates
   {
-    rotX: 0.4,
-    rotY: 5.0,
-    rotZ: 0.15,
-    scale: 0.3,
-    posX: 1.0,
-    posY: 1.0,
-    camY: 0.5,
-    camZ: 4.5,
+    rotX: 0.2,
+    rotY: 3.6,
+    rotZ: 0.1,
+    scale: 0.75,
+    posX: 0.42,
+    posY: 0.18,
+    camY: 0.4,
+    camZ: 4.2,
     duration: 2,
   },
-  // Works → Overview (figure returns, grows back)
+  // Works → Overview: return to center, gentle grow
   {
     rotX: -0.1,
-    rotY: 7.5,
+    rotY: 5.5,
     rotZ: -0.08,
-    scale: 1.1,
+    scale: 1.15,
     posX: 0,
     posY: 0,
     camY: 0.4,
-    camZ: 3.4,
+    camZ: 3.6,
     duration: 2,
   },
-  // Overview → Web (gentle rotation, closer)
+  // Overview → Web: small drift left, similar size
   {
     rotX: 0.15,
-    rotY: 10.0,
+    rotY: 7.6,
     rotZ: 0.12,
-    scale: 1.3,
-    posX: -0.12,
+    scale: 1.25,
+    posX: -0.18,
     posY: 0,
     camY: 0.4,
-    camZ: 3.2,
+    camZ: 3.5,
     duration: 2,
   },
-  // Web → Contact (shrink, drift)
+  // Web → Contact: drift right + slight shrink — but never below scaleMin
   {
-    rotX: 0.35,
-    rotY: 12.0,
-    rotZ: -0.3,
-    scale: 0.55,
-    posX: 0.2,
+    rotX: 0.3,
+    rotY: 9.4,
+    rotZ: -0.18,
+    scale: 0.8,
+    posX: 0.28,
     posY: -0.1,
-    camY: 0.5,
-    camZ: 5.0,
+    camY: 0.45,
+    camZ: 4.4,
     duration: 2,
   },
 ];
