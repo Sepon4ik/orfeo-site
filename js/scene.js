@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
-import { CAMERA, RENDERER, MATERIAL, LIGHTS, SCROLL, ANIMATION } from './config.js';
+import { CAMERA, RENDERER, MATERIAL, LIGHTS, SCROLL, ANIMATION, TORUS_BOUNDS } from './config.js';
 import { createGeometry, updateTorusSlinky } from './torus.js';
 
 let scene, camera, renderer, mesh, geo, orbitLights, scrollState;
@@ -167,13 +167,31 @@ export function animate() {
   mesh.rotation.y += (scrollState.rotY + smoothMx * ANIMATION.mouseRotationInfluence - mesh.rotation.y) * L;
   mesh.rotation.z += (scrollState.rotZ - mesh.rotation.z) * L;
 
-  const s = scrollState.scale;
-  mesh.scale.x += (s - mesh.scale.x) * L;
-  mesh.scale.y += (s - mesh.scale.y) * L;
-  mesh.scale.z += (s - mesh.scale.z) * L;
+  // ——— Safety clamps: torus must NEVER hide off-screen ———
+  // Scale: never below scaleMin (would make torus invisible) or above scaleMax (clips frustum)
+  const safeScale = Math.min(
+    TORUS_BOUNDS.scaleMax,
+    Math.max(TORUS_BOUNDS.scaleMin, scrollState.scale)
+  );
 
-  mesh.position.x += (scrollState.posX - mesh.position.x) * L;
-  mesh.position.y += (scrollState.posY - mesh.position.y) * L;
+  // Position: viewport-aware clamp. Compute visible half-width/height at the
+  // current camera Z, then keep mesh center within `viewportMargin` of bounds.
+  // На мобильном с узким aspect это автоматически прижимает торус к центру.
+  const fovRad = (camera.fov * Math.PI) / 180;
+  const targetCamZ = scrollState.camZ; // use target, not current, for stability
+  const halfH = Math.tan(fovRad * 0.5) * targetCamZ;
+  const halfW = halfH * camera.aspect;
+  const maxX = halfW * TORUS_BOUNDS.viewportMargin;
+  const maxY = halfH * TORUS_BOUNDS.viewportMargin;
+  const safeX = Math.max(-maxX, Math.min(maxX, scrollState.posX));
+  const safeY = Math.max(-maxY, Math.min(maxY, scrollState.posY));
+
+  mesh.scale.x += (safeScale - mesh.scale.x) * L;
+  mesh.scale.y += (safeScale - mesh.scale.y) * L;
+  mesh.scale.z += (safeScale - mesh.scale.z) * L;
+
+  mesh.position.x += (safeX - mesh.position.x) * L;
+  mesh.position.y += (safeY - mesh.position.y) * L;
 
   camera.position.y += (scrollState.camY - camera.position.y) * L;
   camera.position.z += (scrollState.camZ - camera.position.z) * L;

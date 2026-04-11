@@ -11,12 +11,17 @@
 
 import { init as initScene, animate as startRenderLoop, getScrollState } from './scene.js';
 import { init as initScrollAnim } from './scroll-anim.js';
+import { init as initBrand } from './components/brand.js';
 import { init as initSubtitleRotator } from './components/subtitle-rotator.js';
 import { init as initMagneticButton } from './components/magnetic-button.js';
 import { init as initGrain } from './effects/grain.js';
 import { init as initFullpage } from './fullpage.js';
 
 // --- Boot sequence ---
+
+// 0. Hydrate brand strings from config (must run before subtitle rotator,
+//    so any [data-brand] inside the rotating subtitle is filled before activation)
+initBrand();
 
 // 1. Initialize Three.js scene
 const sceneContext = initScene();
